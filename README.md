@@ -1,2 +1,2 @@
-# javadoc-coverage
-A Maven plugin to generate javadoc coverage reports
+# JavaDoc Coverage Maven Plugin
+A Maven plugin to generate JavaDoc coverage reports. It parses the java source files generating an Abstract Syntax Tree using the [javaparser](http://javaparser.org) and checks the percentage of the JavaDoc that is covered by JavaDoc documentation, including packages, class, interfaces, attributes, methods, parameters and method's return.
