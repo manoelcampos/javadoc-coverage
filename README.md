@@ -6,3 +6,6 @@ The plugin should:
 - be based on a javadoc doclet plugin such as the [exportdoclet](https://github.com/manoelcampos/exportdoclet) to generate the reports;
 - implement a doclet to read the javadocs from the source files and use the javaparser to check which elements (such as classes, interfaces, methods, etc) in the entire project source code aren't inside the elements listed by the doclet (meaning they don't have documentation);
 - generate reports in different formats such as HTML, XML, JSON, etc. Each available format should be a different maven dependency ou maybe a parameter.
+
+# References
+- http://jdoccoverage.sourceforge.net
