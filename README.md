@@ -1,4 +1,4 @@
-# JavaDoc Coverage Maven Plugin [![Build Status](https://img.shields.io/travis/manoelcampos/javadoc-coverage/master.svg)](https://travis-ci.org/manoelcampos/javadoc-coverage) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+# JavaDoc Coverage Maven Plugin [![Build Status](https://img.shields.io/travis/manoelcampos/javadoc-coverage/master.svg)](https://travis-ci.org/manoelcampos/javadoc-coverage) [![Dependency Status](https://www.versioneye.com/user/projects/5968248d368b08001a803892/badge.svg?style=rounded-square)] [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 A Maven plugin to generate JavaDoc coverage reports. It parses the java source files and checks the percentage of the Java code which is covered by JavaDoc documentation, including:
 - modules, packages
