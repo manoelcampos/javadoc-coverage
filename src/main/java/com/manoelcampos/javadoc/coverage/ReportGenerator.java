@@ -16,6 +16,7 @@
 package com.manoelcampos.javadoc.coverage;
 
 import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
+import com.manoelcampos.javadoc.coverage.stats.JavaDocsStats;
 import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
 import com.sun.javadoc.PackageDoc;
