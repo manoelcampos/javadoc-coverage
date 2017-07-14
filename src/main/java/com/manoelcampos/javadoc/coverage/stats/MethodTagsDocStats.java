@@ -20,12 +20,14 @@ import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Tag;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * Computes statistics about the JavaDocs of a set of tags
  * associated to a method, such as the {@code @param} and {@code @throws} tags.
  *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
 public abstract class MethodTagsDocStats extends MembersDocStats {
     private final ExecutableMemberDoc methodDoc;
@@ -38,12 +40,10 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
     public abstract String getTagName();
 
     @Override
-    public long getDocumentedMembers() {
+    public Stream<String> getDocumentedMembersComments() {
         return Arrays.stream(getMethodDoc().tags())
                 .filter(tag -> getTagName().equals(tag.name()))
-                .map(Tag::text)
-                .filter(Utils::isNotStringEmpty)
-                .count();
+                .map(Tag::text);
     }
 
     ExecutableMemberDoc getMethodDoc() {

@@ -26,9 +26,13 @@ import java.util.List;
  * Computes statistics about the JavaDocs of a class, inner class, interface or enum
  * and its members, such as: fields, methods, constructors and annotations.
  *
+ * It's the main class to store JavaDocs statistics, grouping
+ * the statics of its members.
+ *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
-public class ClassDocStats extends CompoundedDocStats {
+public class ClassDocStats implements CompoundedDocStats {
     private final ClassDoc doc;
     private final ClassMembersDocStats fieldsStats;
     private final ClassMembersDocStats enumsStats;
@@ -86,7 +90,7 @@ public class ClassDocStats extends CompoundedDocStats {
     }
 
     @Override
-    protected ProgramElementDoc getDoc() {
+    public Doc getDoc() {
         return doc;
     }
 

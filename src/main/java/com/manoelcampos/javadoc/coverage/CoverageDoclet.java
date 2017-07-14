@@ -15,20 +15,21 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.Doclet;
-import com.sun.javadoc.LanguageVersion;
-import com.sun.javadoc.RootDoc;
+import com.sun.javadoc.*;
 import com.sun.tools.doclets.standard.Standard;
+
+import java.io.*;
 
 /**
  * A {@link Doclet} that computes coverage of JavaDoc documentation.
  *
  * @author Manoel Campos da Silva Filho
  * @see ReportGenerator
+ * @since 1.0.0
  */
 public class CoverageDoclet extends Doclet {
     private final ReportGenerator generator;
+    private final RootDoc rootDoc;
 
     /**
      * Creates a ExportDoclet to export javadoc.
@@ -36,8 +37,9 @@ public class CoverageDoclet extends Doclet {
      * @param rootDoc the root of the program structure information.
      *                From this root all other program structure information can be extracted.
      */
-    public CoverageDoclet(RootDoc rootDoc) {
-        this.generator = new ReportGenerator(rootDoc);
+    public CoverageDoclet(final RootDoc rootDoc) {
+        this.rootDoc = rootDoc;
+        this.generator = new ReportGenerator(this);
     }
 
     /**
@@ -48,7 +50,7 @@ public class CoverageDoclet extends Doclet {
      * @return true if the doclet was started successfully, false otherwise
      * @see Doclet#start(RootDoc)
      */
-    public static boolean start(RootDoc rootDoc) {
+    public static boolean start(final RootDoc rootDoc) {
         return new CoverageDoclet(rootDoc).render();
     }
 
@@ -60,7 +62,7 @@ public class CoverageDoclet extends Doclet {
      * @return true if the options are valid, false otherwise
      * @see Doclet#validOptions(String[][], DocErrorReporter)
      */
-    public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
+    public static boolean validOptions(final String[][] options, final DocErrorReporter errorReporter) {
         return Standard.validOptions(options, errorReporter);
     }
 
@@ -71,7 +73,7 @@ public class CoverageDoclet extends Doclet {
      * @return the number of arguments required for the given option
      * @see Doclet#optionLength(String)
      */
-    public static int optionLength(String option) {
+    public static int optionLength(final String option) {
         return Standard.optionLength(option);
     }
 
@@ -94,5 +96,43 @@ public class CoverageDoclet extends Doclet {
      */
     private boolean render() {
         return generator.start();
+    }
+
+    public RootDoc getRootDoc() {
+        return rootDoc;
+    }
+
+    /**
+     * Gets the output directory passed as a command line argument to javadoc tool.
+     *
+     * @return the output directory to export the JavaDocs
+     */
+    public String getOutputDir() {
+        for (final String[] option : rootDoc.options()) {
+            if (option.length == 2 && option[0].equals("-d")) {
+                return Utils.includeTrailingDirSeparator(option[1]);
+            }
+        }
+
+        return "";
+    }
+
+    /**
+     * Gets a {@link PrintWriter} to export the documentation of a class or package.
+     *
+     * @param fileName   the name of the file to export the documentation to
+     */
+    public PrintWriter getWriter(final String fileName) throws FileNotFoundException {
+        final File file = getOutputFile(fileName);
+        return new PrintWriter(new OutputStreamWriter(new FileOutputStream(file)));
+    }
+
+    private File getOutputFile(final String fileName) {
+        final File dir = new File(getOutputDir());
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new RuntimeException("The directory '"+getOutputDir()+"+ was not created due to unknown reason.");
+        }
+
+        return new File(dir, fileName + ".txt");
     }
 }

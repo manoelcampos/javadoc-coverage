@@ -15,8 +15,12 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
+import com.manoelcampos.javadoc.coverage.Utils;
+
+import java.util.stream.Stream;
+
 /**
- * Computes statistics about the JavaDocs of a set of members
+ * Computes statistics about the JavaDocs of a list of members
  * belonging to a {@link CompoundedDocStats} object.
  * In the case the {@link CompoundedDocStats} object is a class,
  * this object computes statistics for its fields, methods and so on.
@@ -24,15 +28,18 @@ package com.manoelcampos.javadoc.coverage.stats;
  * this object computes statistics for its parameters and thrown exceptions.
  *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
-public abstract class MembersDocStats {
+public abstract class MembersDocStats implements DocStats {
     private boolean printIfNoMembers;
-
-    public abstract String getMembersType();
 
     public abstract long getMembersNumber();
 
-    public abstract long getDocumentedMembers();
+    public long getDocumentedMembers(){
+        return getDocumentedMembersComments().filter(Utils::isNotStringEmpty).count();
+    }
+
+    public abstract Stream<String> getDocumentedMembersComments();
 
     public long getUndocumentedMembers() {
         return getMembersNumber() - getDocumentedMembers();

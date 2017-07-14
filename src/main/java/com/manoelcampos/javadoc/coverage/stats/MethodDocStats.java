@@ -16,6 +16,7 @@
 package com.manoelcampos.javadoc.coverage.stats;
 
 import com.manoelcampos.javadoc.coverage.Utils;
+import com.sun.javadoc.Doc;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.Tag;
@@ -27,8 +28,9 @@ import java.util.Arrays;
  * and its members, such as: parameters and thrown exceptions.
  *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
-public class MethodDocStats extends CompoundedDocStats {
+public class MethodDocStats implements CompoundedDocStats {
     private final ExecutableMemberDoc doc;
     private final MethodParamsDocStats paramsStats;
     private final MethodExceptionsDocStats thrownExceptions;
@@ -64,7 +66,7 @@ public class MethodDocStats extends CompoundedDocStats {
     }
 
     @Override
-    protected ProgramElementDoc getDoc() {
+    public Doc getDoc() {
         return doc;
     }
 

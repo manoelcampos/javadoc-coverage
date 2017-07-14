@@ -21,6 +21,7 @@ import com.sun.javadoc.ExecutableMemberDoc;
  * Computes statistics about the JavaDocs of the exceptions thrown by a specific method.
  *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
 public class MethodExceptionsDocStats extends MethodTagsDocStats {
 
@@ -29,7 +30,7 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
     }
 
     @Override
-    public String getMembersType() {
+    public String getType() {
         return "Exceptions";
     }
 

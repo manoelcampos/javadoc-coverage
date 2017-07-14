@@ -21,12 +21,14 @@ import com.sun.javadoc.MemberDoc;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Computes statistics about the JavaDocs of specific type of members of a class, interface or enum.
  * Members may be either fields, methods or constructors.
  *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
 public class ClassMembersDocStats extends MembersDocStats {
     private final MemberDoc[] membersDocs;
@@ -57,15 +59,12 @@ public class ClassMembersDocStats extends MembersDocStats {
     }
 
     @Override
-    public long getDocumentedMembers() {
-        return Arrays.stream(membersDocs)
-                .map(Doc::getRawCommentText)
-                .filter(Utils::isNotStringEmpty)
-                .count();
+    public Stream<String> getDocumentedMembersComments() {
+        return Arrays.stream(membersDocs).map(Doc::getRawCommentText);
     }
 
     @Override
-    public String getMembersType() {
+    public String getType() {
         return membersType;
     }
 }

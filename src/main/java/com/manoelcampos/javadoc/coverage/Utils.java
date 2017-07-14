@@ -15,10 +15,13 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
+import java.io.File;
+
 /**
  * An utility class.
  *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
 public final class Utils {
     /**
@@ -33,5 +36,26 @@ public final class Utils {
 
     public static boolean isStringEmpty(final String str) {
         return str == null || str.trim().isEmpty();
+    }
+
+
+    /**
+     * Adds a trailing slash at the end of a path if it doesn't have one yet.
+     * The trailing slash type is system-dependent and will be accordingly selected.
+     *
+     * @param path the path to include a trailing slash
+     * @return the path with a trailing slash if there wasn't one and the path is not empty,
+     * the original path otherwise
+     */
+    public static String includeTrailingDirSeparator(final String path) {
+        if (path.trim().isEmpty()) {
+            return path;
+        }
+
+        if (path.charAt(path.length() - 1) != File.separatorChar) {
+            return path + File.separator;
+        }
+
+        return path;
     }
 }

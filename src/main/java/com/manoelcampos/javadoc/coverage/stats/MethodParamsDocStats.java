@@ -22,6 +22,7 @@ import com.sun.javadoc.ExecutableMemberDoc;
  * from a specific method.
  *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
 public class MethodParamsDocStats extends MethodTagsDocStats {
 
@@ -40,7 +41,7 @@ public class MethodParamsDocStats extends MethodTagsDocStats {
     }
 
     @Override
-    public String getMembersType() {
+    public String getType() {
         return "Params";
     }
 }

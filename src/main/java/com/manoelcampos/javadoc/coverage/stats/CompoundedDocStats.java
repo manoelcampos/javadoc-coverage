@@ -16,21 +16,20 @@
 package com.manoelcampos.javadoc.coverage.stats;
 
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.Doc;
 
 /**
  * Computes statistics about the JavaDocs of elements compounded by other ones,
- * such as classes (compounded of fields, constructors, methods, etc) and
+ * such as classes (compounded of fields, constructors, methods, etc) or
  * methods (compounded of parameters and thrown exceptions).
  *
  * @author Manoel Campos da Silva Filho
+ * @since 1.0.0
  */
-abstract class CompoundedDocStats {
-    public abstract String getType();
-
-    public boolean hasDocumentation() {
+public interface CompoundedDocStats extends DocStats {
+    default boolean hasDocumentation() {
         return Utils.isNotStringEmpty(getDoc().getRawCommentText());
     }
 
-    protected abstract ProgramElementDoc getDoc();
+    Doc getDoc();
 }
