@@ -225,11 +225,13 @@
                     </mapping>
                     <includes>
                         <include>**/*.java</include>
-                        <include>**/*.xml</include>
                     </includes>
                     <excludes>
                         <exclude>**/.*/**</exclude>
+                        <exclude>sample-project/**</exclude>
                         <exclude>target/**</exclude>
+                        <exclude>src/test/**</exclude>
+                        <exclude>src/main/resources/**</exclude>
                     </excludes>
                     <properties>
                         <startYear>${inceptionYear}</startYear>

@@ -22,8 +22,8 @@ import com.sun.javadoc.Tag;
 import java.util.Arrays;
 
 /**
- * Computes statistics about the javadocs of a set of tags
- * associated to a method, such as the param, return and throws tags.
+ * Computes statistics about the JavaDocs of a set of tags
+ * associated to a method, such as the {@code @param} and {@code @throws} tags.
  *
  * @author Manoel Campos da Silva Filho
  */

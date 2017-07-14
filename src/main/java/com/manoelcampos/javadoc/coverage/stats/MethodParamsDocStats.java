@@ -18,8 +18,8 @@ package com.manoelcampos.javadoc.coverage.stats;
 import com.sun.javadoc.ExecutableMemberDoc;
 
 /**
- * Computes statistics about the javadocs of a method,
- * including its parameters, return value and thrown exceptions.
+ * Computes statistics about the JavaDocs of parameters
+ * from a specific method.
  *
  * @author Manoel Campos da Silva Filho
  */

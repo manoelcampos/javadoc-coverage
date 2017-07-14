@@ -23,6 +23,9 @@ import com.sun.javadoc.Tag;
 import java.util.Arrays;
 
 /**
+ * Computes statistics about the JavaDocs of a method
+ * and its members, such as: parameters and thrown exceptions.
+ *
  * @author Manoel Campos da Silva Filho
  */
 public class MethodDocStats extends CompoundedDocStats {
@@ -41,10 +44,10 @@ public class MethodDocStats extends CompoundedDocStats {
      * Indicates if the return value of the method is documented.
      *
      * @return true if the return value is documented, false otherwise.
-     * @todo If the return is void or is a constructor, it don't have to be documented.
-     * This way, the method should return true
      */
     public boolean isReturnValueDocumented() {
+         /* @todo If the return is void or is a constructor, it don't have to be documented.
+         This way, the method should return true.*/
         return Arrays.stream(doc.tags())
                 .filter(tag -> "@return".equals(tag.name()))
                 .map(Tag::text)

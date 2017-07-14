@@ -18,7 +18,7 @@ package com.manoelcampos.javadoc.coverage.stats;
 import com.sun.javadoc.ExecutableMemberDoc;
 
 /**
- * Computes statistics about the javadocs of the exceptions thrown by a specific method.
+ * Computes statistics about the JavaDocs of the exceptions thrown by a specific method.
  *
  * @author Manoel Campos da Silva Filho
  */

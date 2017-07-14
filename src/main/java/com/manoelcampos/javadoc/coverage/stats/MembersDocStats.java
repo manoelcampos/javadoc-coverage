@@ -16,7 +16,7 @@
 package com.manoelcampos.javadoc.coverage.stats;
 
 /**
- * Computes statistics about the javadocs of a set of members
+ * Computes statistics about the JavaDocs of a set of members
  * belonging to a {@link CompoundedDocStats} object.
  * In the case the {@link CompoundedDocStats} object is a class,
  * this object computes statistics for its fields, methods and so on.

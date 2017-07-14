@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A renderer class that actually exports javadoc comments.
+ * A renderer class that actually exports JavaDoc comments.
  * It is used when the {@link CoverageDoclet} is started.
  *
  * @author Manoel Campos da Silva Filho
@@ -44,7 +44,7 @@ class ReportGenerator {
     }
 
     /**
-     * Exports classes and packages javadocs, inside a {@link RootDoc} object.
+     * Exports classes and packages JavaDocs, inside a {@link RootDoc} object.
      *
      * @return true if successful, false otherwise
      */
@@ -119,7 +119,7 @@ class ReportGenerator {
      * @param writer the {@link PrintWriter} used to output the package documentation.
      */
     private void exportPackageDoc(final PackageDoc doc, final PrintWriter writer) {
-        writer.printf("\tPackage %s. Documented: %s\n", doc.name(), !Utils.isStringEmpty(doc.commentText()));
+        writer.printf("\tPackage %s. Documented: %s\n", doc.name(), Utils.isNotStringEmpty(doc.commentText()));
     }
 
     /**
@@ -143,7 +143,7 @@ class ReportGenerator {
     /**
      * Gets the output directory passed as a command line argument to javadoc tool.
      *
-     * @return the output directory to export the javadocs
+     * @return the output directory to export the JavaDocs
      */
     private String getOutputDir() {
         for (final String[] option : rootDoc.options()) {

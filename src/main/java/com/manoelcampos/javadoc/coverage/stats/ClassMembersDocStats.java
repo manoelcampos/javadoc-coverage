@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Computes statistics about the javadocs of specific type of members of a class, interface or enum.
+ * Computes statistics about the JavaDocs of specific type of members of a class, interface or enum.
  * Members may be either fields, methods or constructors.
  *
  * @author Manoel Campos da Silva Filho
@@ -46,10 +46,10 @@ public class ClassMembersDocStats extends MembersDocStats {
      * This way, it may count as a non-documented element
      * while it doesn't even exist into the source code.
      *
-     * @todo the method is not working as expected. It always returns the length of the array.
      */
     @Override
     public long getMembersNumber() {
+        // @todo the method is not working as expected. It always returns the length of the array.
         return Arrays.stream(membersDocs)
                 .map(Doc::position)
                 .filter(Objects::nonNull)

@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Computes statistics about the javadocs of a class, inner class, interface or enum
- * and its members, namely: fields, methods, constructors and annotations.
+ * Computes statistics about the JavaDocs of a class, inner class, interface or enum
+ * and its members, such as: fields, methods, constructors and annotations.
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -82,7 +82,7 @@ public class ClassDocStats extends CompoundedDocStats {
 
     @Override
     public boolean hasDocumentation() {
-        return !Utils.isStringEmpty(doc.getRawCommentText());
+        return Utils.isNotStringEmpty(doc.getRawCommentText());
     }
 
     @Override
