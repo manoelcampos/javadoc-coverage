@@ -1,13 +1,16 @@
-# JavaDoc Coverage Maven Plugin [![Build Status](https://img.shields.io/travis/manoelcampos/javadoc-coverage/master.svg)](https://travis-ci.org/manoelcampos/javadoc-coverage) [![Dependency Status](https://www.versioneye.com/user/projects/5968248d368b08001a803892/badge.svg?style=rounded-square)](https://www.versioneye.com/user/projects/5968248d368b08001a803892) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+# JavaDoc Coverage Maven Plugin 
+[![Build Status](https://img.shields.io/travis/manoelcampos/javadoc-coverage/master.svg)](https://travis-ci.org/manoelcampos/javadoc-coverage) [![Dependency Status](https://www.versioneye.com/user/projects/5968248d368b08001a803892/badge.svg?style=rounded-square)](https://www.versioneye.com/user/projects/5968248d368b08001a803892) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0fef8ada2def4d239931f90a50a3f778)](https://www.codacy.com/app/manoelcampos/javadoc-coverage?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/javadoc-coverage&amp;utm_campaign=Badge_Grade) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-A Maven plugin to generate JavaDoc coverage reports. It parses the java source files and checks the percentage of the Java code which is covered by JavaDoc documentation, including:
-- modules, packages
+A Maven plugin to generate JavaDoc coverage reports. It parses the java source files and checks the percentage of the Java code covered by JavaDoc documentation, including:
+- packages (*Java 9 modules not supported yet*)
 - classes, inner classes, interfaces and enums
 - class attributes
 - methods, parameters, exceptions and return value.
 
-The project provides a [Doclet](http://docs.oracle.com/javase/7/docs/technotes/guides/javadoc/doclet/overview.html) to be used with the JavaDoc Tool
-and the maven-javadoc-plugin to automate the generation of JavaDoc documentation coverage at your project.
+Current IDEs issue warnings about missing JavaDoc tags and documentation, allowing you to individually fix the issues. 
+Similar to code coverage tools, this plugin provides a way to get a summarized overview of your project's documentation coverage.
+It provides a [Doclet](http://docs.oracle.com/javase/7/docs/technotes/guides/javadoc/doclet/overview.html) to be used with the JavaDoc Tool
+and the `maven-javadoc-plugin` to show JavaDoc documentation coverage of your project.
 
 **This is a pre-release which currently only shows results on the terminal and doesn't compute documentation coverage percentage yet.**
 
