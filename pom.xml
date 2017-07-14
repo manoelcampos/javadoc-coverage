@@ -10,12 +10,8 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <name>JavaDoc Coverage Maven Plugin</name>
-
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
+    <description>Maven plugin to generate coverage reports of JavaDoc documentation.</description>
+    <url>http://manoelcampos.com</url>
 
     <inceptionYear>2017</inceptionYear>
 
@@ -24,8 +20,11 @@
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
     </properties>
 
-    <url>http://manoelcampos.com</url>
-    <description>Maven plugin to generate coverage reports of JavaDoc documentation.</description>
+
+    <organization>
+        <name>Manoel Campos da Silva Filho</name>
+        <url>http://manoelcampos.com</url>
+    </organization>
 
     <licenses>
         <license>
@@ -34,11 +33,140 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Manoel Campos da Silva Filho</name>
+            <email>manoelcampos@gmail.com</email>
+            <organization>Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO)</organization>
+            <organizationUrl>http://www.ifto.edu.br</organizationUrl>
+        </developer>
+    </developers>
+
     <scm>
         <url>https://github.com/manoelcampos/javadoc-coverage</url>
         <connection>scm:git@github.com:manoelcampos/javadoc-coverage.git</connection>
         <developerConnection>scm:git@github.com:manoelcampos/javadoc-coverage.git</developerConnection>
     </scm>
+
+    <issueManagement>
+        <url>http://github.com/manoelcampos/javadoc-coverage/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <profiles>
+        <profile>
+            <!--
+             A profile used to execute all goals required to deploy
+             the project to the Maven Central.
+             To execute use: mvn clean deploy -P all
+
+             To check the deployed artifact and probably release it to maven central
+             you should visit https://oss.sonatype.org.
+             MAKE SURE YOU ARE LOGGED IN TO SEE YOUR DEPLOYMENTS.
+             -->
+            <id>all</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <configuration>
+                            <!-- <failOnError>false</failOnError> -->
+                            <tags>
+                                <direction>
+                                    <name>pre</name>
+                                    <placement>a</placement>
+                                    <head>Precondition:</head>
+                                </direction>
+                                <direction>
+                                    <name>post</name>
+                                    <placement>a</placement>
+                                    <head>Postcondition:</head>
+                                </direction>
+                            </tags>
+                        </configuration>
+                    </plugin>
+
+                    <!--
+                     Signs the generated jar using GPG, as required for deploying at the Maven Central.
+                     Configurations are defined into the local repo settings.xml
+                    -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!--
+                    Plugin to deploy to the maven central using a Sonatype account.
+                    Credentials are defined into the local repo settings.xml
+                    -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <!--If the artifact will be automatically released to maven central
+                            after the upload to sonatype.-->
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <!--
+     URLs to deploy the project at the Maven Central (http://mvnrepository.com)
+     using a Sonatype account (http://central.sonatype.org)
+     See the "all" profile in this pom for deployment information.
+    -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -128,26 +256,23 @@
                     <strictCheck>true</strictCheck>
                 </configuration>
             </plugin>
+
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.6</version>
+                <groupId>com.versioneye</groupId>
+                <artifactId>versioneye-maven-plugin</artifactId>
+                <version>3.11.4</version>
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <finalName>${project.build.finalName}-all</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
+                    <organisation>manoelcampos</organisation>
+                    <projectId>5968248d368b08001a803892</projectId>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <!--
+                The plugin is just being executed when the repository is pushed to travis-ci.org
+                in order to speed up local build.
+                See the .travis.yml file to check the command line being executed.
+                -->
+                <!--<executions><execution><goals><goal>update</goal></goals></execution></executions>-->
             </plugin>
+
         </plugins>
     </build>
 </project>
