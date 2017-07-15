@@ -18,7 +18,6 @@ package com.manoelcampos.javadoc.coverage.stats;
 import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.ExecutableMemberDoc;
-import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.Tag;
 
 import java.util.Arrays;
@@ -38,7 +37,7 @@ public class MethodDocStats implements CompoundedDocStats {
     MethodDocStats(final ExecutableMemberDoc doc) {
         this.doc = doc;
         this.paramsStats = new MethodParamsDocStats(doc);
-        this.paramsStats.setPrintIfNoMembers(true);
+        this.paramsStats.enablePrintIfNoMembers();
         this.thrownExceptions = new MethodExceptionsDocStats(doc);
     }
 
@@ -80,15 +79,17 @@ public class MethodDocStats implements CompoundedDocStats {
 
     @Override
     public double getDocumentedMembersPercent() {
-        final double totalMembers =
-                1 + //this 1 is used to count the method as a element which can be documented or not
-                paramsStats.getMembersNumber() +
-                thrownExceptions.getMembersNumber();
-
         final double documentedMembers =
-                (hasDocumentation() ? 1 : 0) +
+                Utils.boolToInt(hasDocumentation()) +
                 paramsStats.getDocumentedMembers() +
                 thrownExceptions.getDocumentedMembers();
-        return Utils.computePercentage(documentedMembers, totalMembers);
+
+        //this 1 is used to count the method as a element which can be documented or not
+        return Utils.computePercentage(documentedMembers, 1+ getMembersNumber());
+    }
+
+    @Override
+    public long getMembersNumber() {
+        return paramsStats.getMembersNumber() + thrownExceptions.getMembersNumber();
     }
 }

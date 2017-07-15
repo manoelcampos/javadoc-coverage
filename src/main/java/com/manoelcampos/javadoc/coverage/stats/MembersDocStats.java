@@ -33,8 +33,6 @@ import java.util.stream.Stream;
 public abstract class MembersDocStats implements DocStats, DocumentableMembers {
     private boolean printIfNoMembers;
 
-    public abstract long getMembersNumber();
-
     public long getDocumentedMembers(){
         return getDocumentedMembersCount(getMembersComments());
     }
@@ -54,7 +52,11 @@ public abstract class MembersDocStats implements DocStats, DocumentableMembers {
         return this.printIfNoMembers;
     }
 
-    final void setPrintIfNoMembers(final boolean printIfNoMembers) {
-        this.printIfNoMembers = printIfNoMembers;
+    final void enablePrintIfNoMembers() {
+        this.printIfNoMembers = true;
+    }
+
+    final void disablePrintIfNoMembers() {
+        this.printIfNoMembers = false;
     }
 }

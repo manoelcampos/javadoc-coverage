@@ -33,9 +33,10 @@ public class ClassDocStats implements CompoundedDocStats {
     private final ClassDoc doc;
     private final ClassMembersDocStats fieldsStats;
     private final ClassMembersDocStats enumsStats;
+    private ClassMembersDocStats annotationsStats;
+
     private List<MethodDocStats> methodsStats;
     private List<MethodDocStats> constructorsStats;
-    private ClassMembersDocStats annotationsStats;
 
     public ClassDocStats(final ClassDoc doc) {
         this.doc = doc;
@@ -70,29 +71,30 @@ public class ClassDocStats implements CompoundedDocStats {
 
     @Override
     public double getDocumentedMembersPercent(){
-        final double membersNumber =
-                1 + //this 1 is used to count the class as a element which can be documented or not
-                fieldsStats.getMembersNumber() +
+        return Utils.mean(
+                Utils.boolToInt(hasDocumentation())*100,
+                fieldsStats.getDocumentedMembersPercent(),
+                enumsStats.getDocumentedMembersPercent(),
+                getDocumentedMethodsPercent(),
+                getDocumentedConstructorsPercent(),
+                annotationsStats.getDocumentedMembersPercent());
+    }
+
+    public double getDocumentedMethodsPercent(){
+        return Utils.average(methodsStats.stream().mapToDouble(MethodDocStats::getDocumentedMembersPercent));
+    }
+
+    public double getDocumentedConstructorsPercent(){
+        return Utils.average(constructorsStats.stream().mapToDouble(MethodDocStats::getDocumentedMembersPercent));
+    }
+
+    @Override
+    public long getMembersNumber() {
+        return fieldsStats.getMembersNumber() +
                 enumsStats.getMembersNumber() +
                 methodsStats.size() +
                 constructorsStats.size() +
                 annotationsStats.getMembersNumber();
-
-        /*
-         * @todo the documentation of params, return value and throws must
-         * count to the total documentation percentage.
-         * It's being considered only the documentation of the method itself.
-        */
-        final double documentedMembers =
-                (hasDocumentation() ? 1 : 0) +
-                        fieldsStats.getDocumentedMembers() +
-                        enumsStats.getDocumentedMembers() +
-                        getDocumentedMembersCount(methodsStats.stream().map(m -> m.getDoc().getRawCommentText())) +
-                        getDocumentedMembersCount(constructorsStats.stream().map(m -> m.getDoc().getRawCommentText())) +
-                        annotationsStats.getDocumentedMembers();
-
-        return Utils.computePercentage(documentedMembers, membersNumber);
-
     }
 
     public String getName() {

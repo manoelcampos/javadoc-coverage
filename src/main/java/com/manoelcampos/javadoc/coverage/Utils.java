@@ -15,7 +15,12 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
+import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
+
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 /**
  * An utility class.
@@ -71,4 +76,18 @@ public final class Utils {
         return (partialValue/totalValue) * 100.0;
 
     }
+
+    public static double mean(final double... values){
+        if(values == null){
+            return 0;
+        }
+
+        return average(Arrays.stream(values));
+    }
+
+    public static double average(final DoubleStream stream) {
+        return stream.average().orElse(0);
+    }
+
+    public static int boolToInt(final boolean bool){ return bool ? 1 : 0; }
 }

@@ -15,10 +15,7 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
-import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
-import com.manoelcampos.javadoc.coverage.stats.JavaDocsStats;
-import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
+import com.manoelcampos.javadoc.coverage.stats.*;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
 
@@ -50,6 +47,7 @@ public class ReportGenerator {
         try (final PrintWriter writer = new PrintWriter(System.out)) {
             exportClassesDocStats(writer);
             exportPackagesDocStats(writer);
+            writer.printf("Project Documentation Coverage: %.2f%%\n\n", stats.getDocumentedMembersPercent());
             writer.flush();
         }
 
@@ -57,11 +55,16 @@ public class ReportGenerator {
     }
 
     private void exportPackagesDocStats(final PrintWriter writer) {
-        writer.printf("Packages: %d Undocumented: %6d Documented: %6d (%.2f%%)\n",
-                stats.getPackagesNumber(), stats.getUndocumentedPackages(),
-                stats.getDocumentedPackages(), stats.getDocumentedPackagesPercent());
-        stats.getPackagesDocStats().getPackagesDoc().forEach(pkg -> exportPackageDocStats(pkg, writer));
+        final PackagesDocStats packagesDocStats = stats.getPackagesDocStats();
+        exportPkgsOrClassesDocStats(writer, packagesDocStats);
+        packagesDocStats.getPackagesDoc().forEach(pkg -> exportPackageDocStats(pkg, writer));
         writer.println();
+    }
+
+    private void exportPkgsOrClassesDocStats(PrintWriter writer, MembersDocStats packagesDocStats) {
+        writer.printf("%-26s: \t%11d Undocumented: %6d Documented: %6d (%.2f%%)\n",
+                packagesDocStats.getType(), packagesDocStats.getMembersNumber(), packagesDocStats.getUndocumentedMembers(),
+                packagesDocStats.getDocumentedMembers(), packagesDocStats.getDocumentedMembersPercent());
     }
 
     /**
@@ -75,10 +78,10 @@ public class ReportGenerator {
     }
 
     private void exportClassesDocStats(final PrintWriter writer) {
-        writer.printf("Classes/Interfaces/Enums: %d Undocumented: %6d Documented: %6d (%.2f%%)\n",
-                stats.getClassesNumber(), stats.getUndocumentedClasses(),
-                stats.getDocumentedClasses(), stats.getDocumentedClassesPercent());
-        for (final ClassDocStats classStats : stats.getClassesDocStats()) {
+        final ClassesDocStats classesDocStats = stats.getClassesDocStats();
+        exportPkgsOrClassesDocStats(writer, classesDocStats);
+
+        for (final ClassDocStats classStats : stats.getClassesDocStats().getClassesList()) {
             exportClassDocStats(classStats, writer);
         }
         writer.println();

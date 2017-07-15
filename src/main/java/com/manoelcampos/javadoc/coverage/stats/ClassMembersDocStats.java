@@ -31,10 +31,10 @@ import java.util.stream.Stream;
  * @since 1.0.0
  */
 public class ClassMembersDocStats extends MembersDocStats {
-    private final MemberDoc[] membersDocs;
+    private final Doc[] membersDocs;
     private final String membersType;
 
-    ClassMembersDocStats(final MemberDoc[] membersDocs, final String membersType) {
+    ClassMembersDocStats(final Doc[] membersDocs, final String membersType) {
         this.membersDocs = membersDocs;
         this.membersType = membersType;
     }
@@ -47,7 +47,6 @@ public class ClassMembersDocStats extends MembersDocStats {
      * into the source class but are counted as a member.
      * This way, it may count as a non-documented element
      * while it doesn't even exist into the source code.
-     *
      */
     @Override
     public long getMembersNumber() {

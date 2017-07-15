@@ -27,4 +27,6 @@ public interface DocumentableMembers {
      */
     double getDocumentedMembersPercent();
 
+    long getMembersNumber();
+
 }
