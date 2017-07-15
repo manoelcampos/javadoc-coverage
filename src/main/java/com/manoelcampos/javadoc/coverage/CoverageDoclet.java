@@ -22,6 +22,8 @@ import java.io.*;
 
 /**
  * A {@link Doclet} that computes coverage of JavaDoc documentation.
+ * It is the entry point for the JavaDoc Tool, which can be executed
+ * either directly or from maven.
  *
  * @author Manoel Campos da Silva Filho
  * @see ReportGenerator

@@ -15,9 +15,11 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
+import com.manoelcampos.javadoc.coverage.Utils;
 import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
 import com.manoelcampos.javadoc.coverage.stats.PackagesDocStats;
 import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
 
 import java.util.*;
@@ -26,10 +28,15 @@ import java.util.*;
  * Computes statistics about the coverage of JavaDocs comments inside the
  * Java files received by the JavaDoc tool.
  *
+ * <p>It's the main class to store JavaDocs statistics for any kind of
+ * documentable element into a Java source file.
+ * It include the computed statistics for an entire Java project
+ * parsed by the JavaDoc Tool.</p>
+ *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public class JavaDocsStats {
+public class JavaDocsStats implements DocStats {
     /**
      * Stores the root of the program structure information.
      */
@@ -66,7 +73,54 @@ public class JavaDocsStats {
         return packagesDocStats;
     }
 
+    public long getClassesNumber(){
+        return classesDocStats.size();
+    }
+
+    public long getPackagesNumber(){
+        return packagesDocStats.getPackagesDoc().size();
+    }
+
     public List<ClassDocStats> getClassesDocStats() {
         return Collections.unmodifiableList(classesDocStats);
+    }
+
+    /**
+     * Gets the percentage of documented {@link #getClassesDocStats() classes}.
+     *
+     * @return the percentage of documented classes, in scale from 0 to 100.
+     */
+    public double getDocumentedClassesPercent(){
+        return Utils.computePercentage(getDocumentedClasses(), getClassesNumber());
+    }
+
+    public long getDocumentedClasses(){
+        return classesDocStats.stream().filter(ClassDocStats::hasDocumentation).count();
+    }
+
+    public long getUndocumentedClasses(){
+        return classesDocStats.size() - getDocumentedClasses();
+    }
+
+    /**
+     * Gets the percentage of documented {@link #getPackagesDocStats() packages}.
+     *
+     * @return the percentage of documented packages, in scale from 0 to 100.
+     */
+    public double getDocumentedPackagesPercent(){
+        return Utils.computePercentage(getDocumentedPackages(), getPackagesNumber());
+    }
+
+    public long getDocumentedPackages(){
+        return getDocumentedMembersCount(packagesDocStats.getPackagesDoc().stream().map(PackageDoc::getRawCommentText));
+    }
+
+    public long getUndocumentedPackages(){
+        return packagesDocStats.getPackagesDoc().size() - getDocumentedPackages();
+    }
+
+    @Override
+    public String getType() {
+        return "Project JavaDoc Statistics";
     }
 }

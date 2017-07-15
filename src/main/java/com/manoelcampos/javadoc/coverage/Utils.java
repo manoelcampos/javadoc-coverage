@@ -27,8 +27,7 @@ public final class Utils {
     /**
      * A private constructor to avoid class instantiation.
      */
-    private Utils() {
-    }
+    private Utils() {}
 
     public static boolean isNotStringEmpty(final String str) {
         return !isStringEmpty(str);
@@ -37,7 +36,6 @@ public final class Utils {
     public static boolean isStringEmpty(final String str) {
         return str == null || str.trim().isEmpty();
     }
-
 
     /**
      * Adds a trailing slash at the end of a path if it doesn't have one yet.
@@ -57,5 +55,20 @@ public final class Utils {
         }
 
         return path;
+    }
+
+    /**
+     * Computes the percentage that a partial value corresponds to a given total.
+     * @param partialValue the partial value to compute the percentage related to the total value
+     * @param totalValue the total the partial value corresponds to
+     * @return the percentage (in scale from 0 to 100) the partial value represents from the total
+     */
+    public static double computePercentage(final double partialValue, final double totalValue){
+        if(totalValue == 0){
+            return 0;
+        }
+
+        return (partialValue/totalValue) * 100.0;
+
     }
 }

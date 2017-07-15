@@ -40,7 +40,7 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
     public abstract String getTagName();
 
     @Override
-    public Stream<String> getDocumentedMembersComments() {
+    public Stream<String> getMembersComments() {
         return Arrays.stream(getMethodDoc().tags())
                 .filter(tag -> getTagName().equals(tag.name()))
                 .map(Tag::text);

@@ -57,7 +57,9 @@ public class ReportGenerator {
     }
 
     private void exportPackagesDocStats(final PrintWriter writer) {
-        writer.println("Packages");
+        writer.printf("Packages: %d Undocumented: %6d Documented: %6d (%.2f%%)\n",
+                stats.getPackagesNumber(), stats.getUndocumentedPackages(),
+                stats.getDocumentedPackages(), stats.getDocumentedPackagesPercent());
         stats.getPackagesDocStats().getPackagesDoc().forEach(pkg -> exportPackageDocStats(pkg, writer));
         writer.println();
     }
@@ -73,7 +75,9 @@ public class ReportGenerator {
     }
 
     private void exportClassesDocStats(final PrintWriter writer) {
-        writer.println("Classes");
+        writer.printf("Classes/Interfaces/Enums: %d Undocumented: %6d Documented: %6d (%.2f%%)\n",
+                stats.getClassesNumber(), stats.getUndocumentedClasses(),
+                stats.getDocumentedClasses(), stats.getDocumentedClassesPercent());
         for (final ClassDocStats classStats : stats.getClassesDocStats()) {
             exportClassDocStats(classStats, writer);
         }
@@ -97,23 +101,33 @@ public class ReportGenerator {
     }
 
     private void exportMethodsDocStats(final PrintWriter writer, final List<MethodDocStats> methodStatsList) {
+        final String memberTypeFormat = "\t\t\t%-12s";
         for (final MethodDocStats methodStats : methodStatsList) {
-            writer.printf("\t\t%s: %s\n\t", methodStats.getType(), methodStats.getMethodName());
-            exportMembersDocStats(writer, methodStats.getParamsStats());
-            writer.print("\t");
-            exportMembersDocStats(writer, methodStats.getThrownExceptions());
+            writer.printf("\t\t%s: %s\n", methodStats.getType(), methodStats.getMethodName());
+            exportMembersDocStats(writer, methodStats.getParamsStats(), memberTypeFormat);
+
+            if(methodStats.getThrownExceptions().getMembersNumber() > 0) {
+                exportMembersDocStats(writer, methodStats.getThrownExceptions(), memberTypeFormat);
+            }
         }
     }
 
     private void exportMembersDocStats(final PrintWriter writer, final MembersDocStats membersDocStats) {
+        exportMembersDocStats(writer, membersDocStats, "");
+    }
+
+    private void exportMembersDocStats(final PrintWriter writer, final MembersDocStats membersDocStats, String memberTypeFormat) {
         if (membersDocStats.getMembersNumber() == 0 && !membersDocStats.isPrintIfNoMembers()) {
-            writer.println();
             return;
         }
 
-        writer.printf("\t\t%-15s %6d Documented: %6d Non-Documented: %6d\n",
-                membersDocStats.getType(), membersDocStats.getMembersNumber(), membersDocStats.getDocumentedMembers(),
-                membersDocStats.getUndocumentedMembers());
+        memberTypeFormat = Utils.isStringEmpty(memberTypeFormat) ? "\t\t%-20s" : memberTypeFormat;
+
+        final String format = memberTypeFormat+" %6d Undocumented: %6d Documented: %6d (%.2f%%) \n";
+        writer.printf(format,
+                membersDocStats.getType()+":", membersDocStats.getMembersNumber(),
+                membersDocStats.getUndocumentedMembers(),
+                membersDocStats.getDocumentedMembers(),  membersDocStats.getDocumentedMembersPercent());
     }
 
 }

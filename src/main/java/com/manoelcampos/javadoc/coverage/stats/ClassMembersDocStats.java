@@ -59,7 +59,7 @@ public class ClassMembersDocStats extends MembersDocStats {
     }
 
     @Override
-    public Stream<String> getDocumentedMembersComments() {
+    public Stream<String> getMembersComments() {
         return Arrays.stream(membersDocs).map(Doc::getRawCommentText);
     }
 

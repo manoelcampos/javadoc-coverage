@@ -36,13 +36,23 @@ public abstract class MembersDocStats implements DocStats {
     public abstract long getMembersNumber();
 
     public long getDocumentedMembers(){
-        return getDocumentedMembersComments().filter(Utils::isNotStringEmpty).count();
+        return getDocumentedMembersCount(getMembersComments());
     }
 
-    public abstract Stream<String> getDocumentedMembersComments();
+    public abstract Stream<String> getMembersComments();
 
     public long getUndocumentedMembers() {
         return getMembersNumber() - getDocumentedMembers();
+    }
+
+    /**
+     * Gets the percentage of {@link #getMembersNumber() members}
+     * that are {@link #getDocumentedMembers() documented}.
+     *
+     * @return the percentage of documented members, in scale from 0 to 100.
+     */
+    public double getDocumentedMembersPercent(){
+        return Utils.computePercentage(getDocumentedMembers(), getMembersNumber());
     }
 
     public final boolean isPrintIfNoMembers() {

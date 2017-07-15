@@ -201,22 +201,33 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.4</version>
                 <executions>
+                    <!-- Exports JavaDocs of the JavaDoc Coverage Plugin to regular HTML files -->
                     <execution>
-                        <id>attach-javadocs</id>
+                        <id>javadoc-html</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>javadoc</goal>
                         </goals>
                     </execution>
+
+                    <!-- Generates the JavaDoc coverage report
+                     over the source files of the JavaDoc Coverage Plugin itself. -->
+                    <execution>
+                        <id>javadoc-coverage</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                        <configuration>
+                            <doclet>com.manoelcampos.javadoc.coverage.CoverageDoclet</doclet>
+                            <docletArtifact>
+                                <groupId>com.manoelcampos</groupId>
+                                <artifactId>javadoc-coverage</artifactId>
+                                <version>${project.version}</version>
+                            </docletArtifact>
+                        </configuration>
+                    </execution>
                 </executions>
-                <configuration>
-                    <source>1.8</source>
-                    <doclet>com.manoelcampos.javadoc.coverage.CoverageDoclet</doclet>
-                    <docletArtifact>
-                        <groupId>com.manoelcampos</groupId>
-                        <artifactId>javadoc-coverage</artifactId>
-                        <version>${project.version}</version>
-                    </docletArtifact>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
@@ -238,7 +249,7 @@
                         <exclude>src/main/resources/**</exclude>
                     </excludes>
                     <properties>
-                        <startYear>${inceptionYear}</startYear>
+                        <startYear>${project.inceptionYear}</startYear>
                         <currentYear>${maven.build.timestamp}</currentYear>
                         <name>Manoel Campos da Silva Filho</name>
                     </properties>
