@@ -91,7 +91,9 @@ public class ReportGenerator {
      * @param writer the {@link PrintWriter} used to output the statistics.
      */
     private void exportClassDocStats(final ClassDocStats classStats, final PrintWriter writer) {
-        writer.printf("\t%s: %s Package: %s Documented: %s\n", classStats.getType(), classStats.getName(), classStats.getPackageName(), classStats.hasDocumentation());
+        writer.printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n",
+                classStats.getType(), classStats.getName(), classStats.getPackageName(),
+                classStats.hasDocumentation(), classStats.getDocumentedMembersPercent());
 
         exportMembersDocStats(writer, classStats.getFieldsStats());
         exportMethodsDocStats(writer, classStats.getConstructorsStats());
@@ -103,7 +105,9 @@ public class ReportGenerator {
     private void exportMethodsDocStats(final PrintWriter writer, final List<MethodDocStats> methodStatsList) {
         final String memberTypeFormat = "\t\t\t%-12s";
         for (final MethodDocStats methodStats : methodStatsList) {
-            writer.printf("\t\t%s: %s\n", methodStats.getType(), methodStats.getMethodName());
+            writer.printf("\t\t%s: %s Documented: %s (%.2f%%)\n",
+                    methodStats.getType(), methodStats.getMethodName(),
+                    methodStats.hasDocumentation(), methodStats.getDocumentedMembersPercent());
             exportMembersDocStats(writer, methodStats.getParamsStats(), memberTypeFormat);
 
             if(methodStats.getThrownExceptions().getMembersNumber() > 0) {

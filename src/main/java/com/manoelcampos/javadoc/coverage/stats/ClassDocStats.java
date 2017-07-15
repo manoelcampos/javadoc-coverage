@@ -68,6 +68,33 @@ public class ClassDocStats implements CompoundedDocStats {
         }
     }
 
+    @Override
+    public double getDocumentedMembersPercent(){
+        final double membersNumber =
+                1 + //this 1 is used to count the class as a element which can be documented or not
+                fieldsStats.getMembersNumber() +
+                enumsStats.getMembersNumber() +
+                methodsStats.size() +
+                constructorsStats.size() +
+                annotationsStats.getMembersNumber();
+
+        /*
+         * @todo the documentation of params, return value and throws must
+         * count to the total documentation percentage.
+         * It's being considered only the documentation of the method itself.
+        */
+        final double documentedMembers =
+                (hasDocumentation() ? 1 : 0) +
+                        fieldsStats.getDocumentedMembers() +
+                        enumsStats.getDocumentedMembers() +
+                        getDocumentedMembersCount(methodsStats.stream().map(m -> m.getDoc().getRawCommentText())) +
+                        getDocumentedMembersCount(constructorsStats.stream().map(m -> m.getDoc().getRawCommentText())) +
+                        annotationsStats.getDocumentedMembers();
+
+        return Utils.computePercentage(documentedMembers, membersNumber);
+
+    }
+
     public String getName() {
         return doc.name();
     }

@@ -77,4 +77,18 @@ public class MethodDocStats implements CompoundedDocStats {
     public MethodExceptionsDocStats getThrownExceptions() {
         return thrownExceptions;
     }
+
+    @Override
+    public double getDocumentedMembersPercent() {
+        final double totalMembers =
+                1 + //this 1 is used to count the method as a element which can be documented or not
+                paramsStats.getMembersNumber() +
+                thrownExceptions.getMembersNumber();
+
+        final double documentedMembers =
+                (hasDocumentation() ? 1 : 0) +
+                paramsStats.getDocumentedMembers() +
+                thrownExceptions.getDocumentedMembers();
+        return Utils.computePercentage(documentedMembers, totalMembers);
+    }
 }

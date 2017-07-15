@@ -15,21 +15,16 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.Doc;
-
 /**
- * Computes statistics about the JavaDocs of elements compounded by other ones,
- * such as classes (compounded of fields, constructors, methods, etc) or
- * methods (compounded of parameters and thrown exceptions).
- *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public interface CompoundedDocStats extends DocStats, DocumentableMembers {
-    default boolean hasDocumentation() {
-        return Utils.isNotStringEmpty(getDoc().getRawCommentText());
-    }
+public interface DocumentableMembers {
+    /**
+     * Gets the percentage of members that are documented.
+     *
+     * @return the percentage of documented members, in scale from 0 to 100.
+     */
+    double getDocumentedMembersPercent();
 
-    Doc getDoc();
 }

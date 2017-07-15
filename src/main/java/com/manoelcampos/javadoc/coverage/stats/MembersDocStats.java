@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public abstract class MembersDocStats implements DocStats {
+public abstract class MembersDocStats implements DocStats, DocumentableMembers {
     private boolean printIfNoMembers;
 
     public abstract long getMembersNumber();
@@ -45,12 +45,7 @@ public abstract class MembersDocStats implements DocStats {
         return getMembersNumber() - getDocumentedMembers();
     }
 
-    /**
-     * Gets the percentage of {@link #getMembersNumber() members}
-     * that are {@link #getDocumentedMembers() documented}.
-     *
-     * @return the percentage of documented members, in scale from 0 to 100.
-     */
+    @Override
     public double getDocumentedMembersPercent(){
         return Utils.computePercentage(getDocumentedMembers(), getMembersNumber());
     }
