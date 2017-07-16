@@ -133,7 +133,7 @@ public class HtmlExporter extends AbstractDataExporter {
     }
 
     private void exportLine(int indentLevel, String memberType, String name, String pkg, Long members, Long undocumented, Long documented, double documentedPercent){
-        exportLine(indentLevel, memberType, name, pkg, memberType.toString(), undocumented.toString(), documented.toString(), documentedPercent);
+        exportLine(indentLevel, memberType, name, pkg, members.toString(), undocumented.toString(), documented.toString(), documentedPercent);
     }
 
     private void exportLine(int indentLevel, String memberType, String name, String pkg, String members, String undocumented, String documented, double documentedPercent){
