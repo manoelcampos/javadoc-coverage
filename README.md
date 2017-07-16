@@ -12,7 +12,7 @@ Similar to code coverage tools, this plugin provides a way to get a summarized o
 It provides a [Doclet](http://docs.oracle.com/javase/7/docs/technotes/guides/javadoc/doclet/overview.html) to be used with the JavaDoc Tool
 and the `maven-javadoc-plugin` to show JavaDoc documentation coverage of your project.
 
-**This is a pre-release which currently only shows results on the terminal and doesn't compute documentation coverage percentage yet.**
+**This is a pre-release which currently only shows results on the terminal yet.**
 
 # Building the Plugin
 
