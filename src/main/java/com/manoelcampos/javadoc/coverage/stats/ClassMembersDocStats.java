@@ -15,9 +15,7 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.Doc;
-import com.sun.javadoc.MemberDoc;
 
 import java.util.Arrays;
 import java.util.Objects;

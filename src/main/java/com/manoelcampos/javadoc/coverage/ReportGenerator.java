@@ -15,6 +15,7 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
+import com.manoelcampos.javadoc.coverage.exporter.HtmlDataExporter;
 import com.manoelcampos.javadoc.coverage.stats.*;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
@@ -30,12 +31,13 @@ import java.util.List;
  * @since 1.0.0
  */
 public class ReportGenerator {
+    public static final String JAVADOC_COVERAGE_HTML = "javadoc-coverage.html";
     private final JavaDocsStats stats;
     private final CoverageDoclet doclet;
 
     public ReportGenerator(final CoverageDoclet doclet) {
-        this.doclet = doclet;
         this.stats = new JavaDocsStats(doclet.getRootDoc());
+        this.doclet = doclet;
     }
 
     /**
@@ -49,6 +51,14 @@ public class ReportGenerator {
             exportPackagesDocStats(writer);
             writer.printf("Project Documentation Coverage: %.2f%%\n\n", stats.getDocumentedMembersPercent());
             writer.flush();
+        }
+
+        try {
+            final File file = doclet.getOutputFile(JAVADOC_COVERAGE_HTML);
+            new HtmlDataExporter(stats, doclet.getWriter(file)).build();
+            System.out.printf("JavaDoc Coverage report saved to %s\n", file.getPath());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
 
         return true;
@@ -123,14 +133,13 @@ public class ReportGenerator {
         exportMembersDocStats(writer, membersDocStats, "");
     }
 
-    private void exportMembersDocStats(final PrintWriter writer, final MembersDocStats membersDocStats, String memberTypeFormat) {
+    private void exportMembersDocStats(final PrintWriter writer, final MembersDocStats membersDocStats, final String memberTypeFormat) {
         if (membersDocStats.getMembersNumber() == 0 && !membersDocStats.isPrintIfNoMembers()) {
             return;
         }
 
-        memberTypeFormat = Utils.isStringEmpty(memberTypeFormat) ? "\t\t%-20s" : memberTypeFormat;
-
-        final String format = memberTypeFormat+" %6d Undocumented: %6d Documented: %6d (%.2f%%) \n";
+        final String format = (Utils.isStringEmpty(memberTypeFormat) ? "\t\t%-20s" : memberTypeFormat) +
+                              " %6d Undocumented: %6d Documented: %6d (%.2f%%) \n";
         writer.printf(format,
                 membersDocStats.getType()+":", membersDocStats.getMembersNumber(),
                 membersDocStats.getUndocumentedMembers(),

@@ -15,12 +15,9 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
-import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
 
 /**
  * An utility class.

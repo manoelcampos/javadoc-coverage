@@ -15,7 +15,6 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Tag;
 

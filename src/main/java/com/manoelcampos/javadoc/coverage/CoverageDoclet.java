@@ -122,14 +122,13 @@ public class CoverageDoclet extends Doclet {
     /**
      * Gets a {@link PrintWriter} to export the documentation of a class or package.
      *
-     * @param fileName the name of the file to export the documentation to
+     * @param file the file to export the documentation to
      */
-    public PrintWriter getWriter(final String fileName) throws FileNotFoundException {
-        final File file = getOutputFile(fileName);
+    public PrintWriter getWriter(final File file) throws FileNotFoundException {
         return new PrintWriter(new OutputStreamWriter(new FileOutputStream(file)));
     }
 
-    private File getOutputFile(final String fileName) {
+    public File getOutputFile(final String fileName) {
         final File dir = new File(getOutputDir());
         if (!dir.exists() && !dir.mkdirs()) {
             throw new RuntimeException("The directory '" + getOutputDir() + "' was not created due to unknown reason.");

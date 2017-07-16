@@ -52,11 +52,11 @@ public abstract class MembersDocStats implements DocStats, DocumentableMembers {
         return this.printIfNoMembers;
     }
 
-    final void enablePrintIfNoMembers() {
+    public final void enablePrintIfNoMembers() {
         this.printIfNoMembers = true;
     }
 
-    final void disablePrintIfNoMembers() {
+    public final void disablePrintIfNoMembers() {
         this.printIfNoMembers = false;
     }
 }
