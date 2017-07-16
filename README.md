@@ -7,7 +7,7 @@ A Maven plugin to generate JavaDoc coverage reports. It parses the java source f
 - class attributes
 - methods, parameters, exceptions and return value.
 
-A sample coverage report is available [here](sample-project/target/site/apidocs/javadoc-coverage.html).
+A sample coverage report is available [here](https://manoelcampos.com/javadoc-coverage/sample-project/target/site/apidocs/javadoc-coverage.html).
 
 Current IDEs warns about missing JavaDoc tags and documentation, allowing you to individually fix the issues. 
 Similar to code coverage tools, this plugin provides a way to get a summarized overview of your project's documentation coverage.
