@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.manoelcampos.javadoc.coverage.stats;
-
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.Doc;
+package com.manoelcampos.javadoc.coverage.exporter;
 
 /**
- * Computes statistics about the JavaDocs of elements compounded by other ones,
- * such as classes (compounded of fields, constructors, methods, etc) or
- * methods (compounded of parameters and thrown exceptions).
- *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public interface CompoundedDocStats extends DocStats, DocumentableMembers {
-    default boolean hasDocumentation() {
-        return Utils.isNotStringEmpty(getDoc().getRawCommentText());
-    }
+public interface DataExporter {
+    String COVERAGE_REPORT_FILE = "javadoc-coverage";
 
-    Doc getDoc();
+    boolean build();
 }

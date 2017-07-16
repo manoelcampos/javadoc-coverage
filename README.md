@@ -7,12 +7,12 @@ A Maven plugin to generate JavaDoc coverage reports. It parses the java source f
 - class attributes
 - methods, parameters, exceptions and return value.
 
-Current IDEs issue warnings about missing JavaDoc tags and documentation, allowing you to individually fix the issues. 
+A sample coverage report is available [here](sample-project/target/site/apidocs/javadoc-coverage.html).
+
+Current IDEs warns about missing JavaDoc tags and documentation, allowing you to individually fix the issues. 
 Similar to code coverage tools, this plugin provides a way to get a summarized overview of your project's documentation coverage.
 It provides a [Doclet](http://docs.oracle.com/javase/7/docs/technotes/guides/javadoc/doclet/overview.html) to be used with the JavaDoc Tool
 and the `maven-javadoc-plugin` to show JavaDoc documentation coverage of your project.
-
-**This is a pre-release which currently only shows results on the terminal yet.**
 
 # Building the Plugin
 
@@ -22,7 +22,7 @@ The plugin is a Java Maven project which can be built directly from any IDE or u
 mvn clean install
 ```
 
-That will build the tool and install it at your local maven repository.
+The command builds the plugin and install it at your local maven repository.
 
 # How to use the Plugin
 
@@ -72,5 +72,7 @@ Now, to generate the regular JavaDocs in HTML and the documentation coverage rep
 ```bash
 mvn clean package
 ```
+
+After that, the documentation coverage report `javadoc-coverage.html` is generated into the default JavaDocs directory, usually at `target/site/apidocs/`.
 
 There is a maven [sample project](sample-project) where you can test the plugin. Just execute the command above inside the project's directory to see the results.

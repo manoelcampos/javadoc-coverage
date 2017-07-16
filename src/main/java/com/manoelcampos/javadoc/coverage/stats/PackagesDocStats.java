@@ -15,12 +15,12 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
+import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.PackageDoc;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * Computes statistics about the JavaDocs of packages.
@@ -35,8 +35,8 @@ public class PackagesDocStats extends MembersDocStats {
         this.packagesDoc = new HashSet<>();
     }
 
-    public boolean addPackageDoc(final PackageDoc doc){
-        return packagesDoc.add(doc);
+    public void addPackageDoc(final PackageDoc doc){
+        packagesDoc.add(doc);
     }
 
     @Override
@@ -50,11 +50,21 @@ public class PackagesDocStats extends MembersDocStats {
     }
 
     @Override
-    public Stream<String> getMembersComments() {
-        return packagesDoc.stream().map(PackageDoc::getRawCommentText);
+    public long getDocumentedMembers() {
+        return packagesDoc.stream().map(PackageDoc::getRawCommentText).filter(Utils::isNotStringEmpty).count();
     }
 
     public Set<PackageDoc> getPackagesDoc() {
         return Collections.unmodifiableSet(packagesDoc);
+    }
+
+    /**
+     * A set of packages doesn't have documentation,
+     * only individual packages have.
+     * @return
+     */
+    @Override
+    public boolean hasDocumentation() {
+        return false;
     }
 }

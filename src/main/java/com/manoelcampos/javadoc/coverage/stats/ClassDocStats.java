@@ -29,7 +29,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public class ClassDocStats implements CompoundedDocStats {
+public class ClassDocStats extends MembersDocStats {
     private final ClassDoc doc;
     private final ClassMembersDocStats fieldsStats;
     private final ClassMembersDocStats enumsStats;
@@ -70,31 +70,35 @@ public class ClassDocStats implements CompoundedDocStats {
     }
 
     @Override
-    public double getDocumentedMembersPercent(){
-        return Utils.mean(
-                Utils.boolToInt(hasDocumentation())*100,
-                fieldsStats.getDocumentedMembersPercent(),
-                enumsStats.getDocumentedMembersPercent(),
-                getDocumentedMethodsPercent(),
-                getDocumentedConstructorsPercent(),
-                annotationsStats.getDocumentedMembersPercent());
-    }
-
-    public double getDocumentedMethodsPercent(){
-        return Utils.average(methodsStats.stream().mapToDouble(MethodDocStats::getDocumentedMembersPercent));
-    }
-
-    public double getDocumentedConstructorsPercent(){
-        return Utils.average(constructorsStats.stream().mapToDouble(MethodDocStats::getDocumentedMembersPercent));
+    public long getDocumentedMembers() {
+        return
+                Utils.boolToInt(hasDocumentation()) +
+                fieldsStats.getDocumentedMembers() +
+                enumsStats.getDocumentedMembers() +
+                getDocumentedMethodMembers(methodsStats) +
+                getDocumentedMethodMembers(constructorsStats) +
+                annotationsStats.getDocumentedMembers();
     }
 
     @Override
     public long getMembersNumber() {
-        return fieldsStats.getMembersNumber() +
-                enumsStats.getMembersNumber() +
-                methodsStats.size() +
-                constructorsStats.size() +
-                annotationsStats.getMembersNumber();
+        //Adds 1 to count class documentation as an element
+        return 1 +
+               fieldsStats.getMembersNumber() +
+               enumsStats.getMembersNumber() +
+               getMethoddMembers(methodsStats) +
+               getMethoddMembers(constructorsStats) +
+               annotationsStats.getMembersNumber();
+    }
+
+    private long getDocumentedMethodMembers(final List<MethodDocStats> methodOrConstructor) {
+        return methodOrConstructor.stream().filter(MethodDocStats::hasDocumentation).count() +
+               methodOrConstructor.stream().mapToLong(MethodDocStats::getDocumentedMembers).sum();
+    }
+
+    private long getMethoddMembers(final List<MethodDocStats> methodOrConstructor) {
+        return methodOrConstructor.size() +
+                methodOrConstructor.stream().mapToLong(MethodDocStats::getMembersNumber).sum();
     }
 
     public String getName() {
@@ -115,11 +119,6 @@ public class ClassDocStats implements CompoundedDocStats {
         return Utils.isNotStringEmpty(doc.getRawCommentText());
     }
 
-    @Override
-    public Doc getDoc() {
-        return doc;
-    }
-
     public ClassMembersDocStats getFieldsStats() {
         return fieldsStats;
     }
@@ -138,5 +137,9 @@ public class ClassDocStats implements CompoundedDocStats {
 
     public List<MethodDocStats> getConstructorsStats() {
         return Collections.unmodifiableList(constructorsStats);
+    }
+
+    public ClassDoc getDoc() {
+        return doc;
     }
 }

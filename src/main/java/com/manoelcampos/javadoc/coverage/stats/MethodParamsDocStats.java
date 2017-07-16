@@ -32,7 +32,7 @@ public class MethodParamsDocStats extends MethodTagsDocStats {
 
     @Override
     public long getMembersNumber() {
-        return getMethodDoc().parameters().length;
+        return getDoc().parameters().length;
     }
 
     @Override
@@ -43,5 +43,15 @@ public class MethodParamsDocStats extends MethodTagsDocStats {
     @Override
     public String getType() {
         return "Params";
+    }
+
+    /**
+     * A set of params doesn't have documentation,
+     * only individual params have.
+     * @return
+     */
+    @Override
+    public boolean hasDocumentation() {
+        return false;
     }
 }

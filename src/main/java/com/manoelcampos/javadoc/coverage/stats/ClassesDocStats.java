@@ -15,14 +15,13 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
+import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
-import com.sun.javadoc.PackageDoc;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @author Manoel Campos da Silva Filho
@@ -49,11 +48,21 @@ public class ClassesDocStats extends MembersDocStats {
     }
 
     @Override
-    public Stream<String> getMembersComments() {
-        return classesDocStats.stream().map(ClassDocStats::getDoc).map(Doc::getRawCommentText);
+    public long getDocumentedMembers() {
+        return classesDocStats.stream().map(ClassDocStats::getDoc).map(Doc::getRawCommentText).filter(Utils::isNotStringEmpty).count();
     }
 
     public List<ClassDocStats> getClassesList() {
         return Collections.unmodifiableList(classesDocStats);
+    }
+
+    /**
+     * A set of classes doesn't have documentation,
+     * only individual classes have.
+     * @return
+     */
+    @Override
+    public boolean hasDocumentation() {
+        return false;
     }
 }

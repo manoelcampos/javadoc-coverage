@@ -15,38 +15,21 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
-
-import java.util.stream.Stream;
-
 /**
  * Computes statistics about the JavaDocs of a list of members
- * belonging to a {@link CompoundedDocStats} object.
- * In the case the {@link CompoundedDocStats} object is a class,
+ * belonging to another object.
+ * In the case the owning is a class,
  * this object computes statistics for its fields, methods and so on.
- * In case the the {@link CompoundedDocStats} object is a method,
+ * In case the the owning object is a method,
  * this object computes statistics for its parameters and thrown exceptions.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public abstract class MembersDocStats implements DocStats, DocumentableMembers {
+public abstract class MembersDocStats implements DocStats {
     private boolean printIfNoMembers;
 
-    public long getDocumentedMembers(){
-        return getDocumentedMembersCount(getMembersComments());
-    }
-
-    public abstract Stream<String> getMembersComments();
-
-    public long getUndocumentedMembers() {
-        return getMembersNumber() - getDocumentedMembers();
-    }
-
-    @Override
-    public double getDocumentedMembersPercent(){
-        return Utils.computePercentage(getDocumentedMembers(), getMembersNumber());
-    }
+    public abstract boolean hasDocumentation();
 
     public final boolean isPrintIfNoMembers() {
         return this.printIfNoMembers;

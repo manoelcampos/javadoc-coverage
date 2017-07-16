@@ -17,8 +17,6 @@ package com.manoelcampos.javadoc.coverage.stats;
 
 import com.manoelcampos.javadoc.coverage.Utils;
 
-import java.util.stream.Stream;
-
 /**
  * An interface to be implemented by classes
  * computing JavaDoc statistics.
@@ -30,11 +28,24 @@ public interface DocStats {
     /**
      * The type of the element to which JavaDoc statistics is being computed,
      * if a class, interface, field, method, method parameter, etc.
-     * @return
+     * @return the type of elements
      */
     String getType();
 
-    default long getDocumentedMembersCount(final Stream<String> comments){
-        return comments.filter(Utils::isNotStringEmpty).count();
+    long getDocumentedMembers();
+
+    default long getUndocumentedMembers() {
+        return getMembersNumber() - getDocumentedMembers();
     }
+
+    /**
+     * Gets the percentage of members that are documented.
+     *
+     * @return the percentage of documented members, in scale from 0 to 100.
+     */
+    default double getDocumentedMembersPercent(){
+        return Utils.computePercentage(getDocumentedMembers(), getMembersNumber());
+    }
+
+    long getMembersNumber();
 }

@@ -36,7 +36,7 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
 
     @Override
     public long getMembersNumber() {
-        return getMethodDoc().thrownExceptions().length;
+        return getDoc().thrownExceptions().length;
     }
 
     @Override

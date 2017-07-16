@@ -15,11 +15,11 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
+import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Tag;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 /**
  * Computes statistics about the JavaDocs of a set of tags
@@ -29,23 +29,30 @@ import java.util.stream.Stream;
  * @since 1.0.0
  */
 public abstract class MethodTagsDocStats extends MembersDocStats {
-    private final ExecutableMemberDoc methodDoc;
+    private final ExecutableMemberDoc doc;
 
-    MethodTagsDocStats(final ExecutableMemberDoc methodDoc) {
+    MethodTagsDocStats(final ExecutableMemberDoc doc) {
         super();
-        this.methodDoc = methodDoc;
+        this.doc = doc;
     }
 
     public abstract String getTagName();
 
     @Override
-    public Stream<String> getMembersComments() {
-        return Arrays.stream(getMethodDoc().tags())
+    public long getDocumentedMembers() {
+        return Arrays.stream(getDoc().tags())
                 .filter(tag -> getTagName().equals(tag.name()))
-                .map(Tag::text);
+                .map(Tag::text)
+                .filter(Utils::isNotStringEmpty)
+                .count();
     }
 
-    ExecutableMemberDoc getMethodDoc() {
-        return methodDoc;
+    ExecutableMemberDoc getDoc() {
+        return doc;
+    }
+
+    @Override
+    public boolean hasDocumentation() {
+        return Utils.isNotStringEmpty(doc.getRawCommentText());
     }
 }

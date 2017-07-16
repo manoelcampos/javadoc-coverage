@@ -16,7 +16,6 @@
 package com.manoelcampos.javadoc.coverage.stats;
 
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.Doc;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Tag;
 
@@ -29,7 +28,7 @@ import java.util.Arrays;
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public class MethodDocStats implements CompoundedDocStats {
+public class MethodDocStats extends MembersDocStats {
     private final ExecutableMemberDoc doc;
     private final MethodParamsDocStats paramsStats;
     private final MethodExceptionsDocStats thrownExceptions;
@@ -37,8 +36,8 @@ public class MethodDocStats implements CompoundedDocStats {
     MethodDocStats(final ExecutableMemberDoc doc) {
         this.doc = doc;
         this.paramsStats = new MethodParamsDocStats(doc);
-        this.paramsStats.enablePrintIfNoMembers();
         this.thrownExceptions = new MethodExceptionsDocStats(doc);
+        this.enablePrintIfNoMembers();
     }
 
     /**
@@ -64,17 +63,17 @@ public class MethodDocStats implements CompoundedDocStats {
         return doc.isConstructor() ? "Constructor" : "Method";
     }
 
-    @Override
-    public Doc getDoc() {
-        return doc;
-    }
-
     public MethodParamsDocStats getParamsStats() {
         return paramsStats;
     }
 
     public MethodExceptionsDocStats getThrownExceptions() {
         return thrownExceptions;
+    }
+
+    @Override
+    public long getDocumentedMembers() {
+        return 0;
     }
 
     @Override
@@ -91,5 +90,10 @@ public class MethodDocStats implements CompoundedDocStats {
     @Override
     public long getMembersNumber() {
         return paramsStats.getMembersNumber() + thrownExceptions.getMembersNumber();
+    }
+
+    @Override
+    public boolean hasDocumentation() {
+        return Utils.isNotStringEmpty(doc.getRawCommentText());
     }
 }

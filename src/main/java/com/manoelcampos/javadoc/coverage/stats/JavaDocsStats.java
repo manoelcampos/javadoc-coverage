@@ -16,13 +16,8 @@
 package com.manoelcampos.javadoc.coverage.stats;
 
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
-import com.manoelcampos.javadoc.coverage.stats.PackagesDocStats;
 import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
-
-import java.util.*;
 
 /**
  * Computes statistics about the coverage of JavaDocs comments inside the
@@ -36,7 +31,7 @@ import java.util.*;
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public class JavaDocsStats implements DocStats, DocumentableMembers {
+public class JavaDocsStats implements DocStats {
     /**
      * Stores the root of the program structure information.
      */
@@ -70,6 +65,11 @@ public class JavaDocsStats implements DocStats, DocumentableMembers {
     @Override
     public String getType() {
         return "Project JavaDoc Statistics";
+    }
+
+    @Override
+    public long getDocumentedMembers() {
+        return packagesDocStats.getDocumentedMembers() + classesDocStats.getDocumentedMembers();
     }
 
     @Override

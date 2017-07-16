@@ -15,11 +15,11 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
+import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.Doc;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * Computes statistics about the JavaDocs of specific type of members of a class, interface or enum.
@@ -56,12 +56,22 @@ public class ClassMembersDocStats extends MembersDocStats {
     }
 
     @Override
-    public Stream<String> getMembersComments() {
-        return Arrays.stream(membersDocs).map(Doc::getRawCommentText);
+    public long getDocumentedMembers() {
+        return Arrays.stream(membersDocs).map(Doc::getRawCommentText).filter(Utils::isNotStringEmpty).count();
     }
 
     @Override
     public String getType() {
         return membersType;
+    }
+
+    /**
+     * A set of class members doesn't have documentation,
+     * only individual members have.
+     * @return
+     */
+    @Override
+    public boolean hasDocumentation() {
+        return false;
     }
 }

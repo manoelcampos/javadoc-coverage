@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.manoelcampos.javadoc.coverage;
+package com.manoelcampos.javadoc.coverage.exporter;
 
-import com.manoelcampos.javadoc.coverage.exporter.HtmlDataExporter;
+import com.manoelcampos.javadoc.coverage.CoverageDoclet;
+import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.exporter.DataExporter;
 import com.manoelcampos.javadoc.coverage.stats.*;
 import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.RootDoc;
@@ -24,20 +26,14 @@ import java.io.*;
 import java.util.List;
 
 /**
- * A renderer class that actually exports JavaDoc comments.
- * It is used when the {@link CoverageDoclet} is started.
- *
+ * Prints the JavaDoc coverage report to the console.
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public class ReportGenerator {
-    public static final String JAVADOC_COVERAGE_HTML = "javadoc-coverage.html";
-    private final JavaDocsStats stats;
-    private final CoverageDoclet doclet;
+public class ConsoleExporter extends AbstractDataExporter {
 
-    public ReportGenerator(final CoverageDoclet doclet) {
-        this.stats = new JavaDocsStats(doclet.getRootDoc());
-        this.doclet = doclet;
+    public ConsoleExporter(final CoverageDoclet doclet) throws FileNotFoundException {
+        super(doclet);
     }
 
     /**
@@ -45,27 +41,20 @@ public class ReportGenerator {
      *
      * @return true if successful, false otherwise
      */
-    public boolean start() {
+    @Override
+    public boolean build() {
         try (final PrintWriter writer = new PrintWriter(System.out)) {
             exportClassesDocStats(writer);
             exportPackagesDocStats(writer);
-            writer.printf("Project Documentation Coverage: %.2f%%\n\n", stats.getDocumentedMembersPercent());
+            writer.printf("Project Documentation Coverage: %.2f%%\n\n", getStats().getDocumentedMembersPercent());
             writer.flush();
-        }
-
-        try {
-            final File file = doclet.getOutputFile(JAVADOC_COVERAGE_HTML);
-            new HtmlDataExporter(stats, doclet.getWriter(file)).build();
-            System.out.printf("JavaDoc Coverage report saved to %s\n", file.getPath());
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         }
 
         return true;
     }
 
     private void exportPackagesDocStats(final PrintWriter writer) {
-        final PackagesDocStats packagesDocStats = stats.getPackagesDocStats();
+        final PackagesDocStats packagesDocStats = getStats().getPackagesDocStats();
         exportPkgsOrClassesDocStats(writer, packagesDocStats);
         packagesDocStats.getPackagesDoc().forEach(pkg -> exportPackageDocStats(pkg, writer));
         writer.println();
@@ -88,10 +77,10 @@ public class ReportGenerator {
     }
 
     private void exportClassesDocStats(final PrintWriter writer) {
-        final ClassesDocStats classesDocStats = stats.getClassesDocStats();
+        final ClassesDocStats classesDocStats = getStats().getClassesDocStats();
         exportPkgsOrClassesDocStats(writer, classesDocStats);
 
-        for (final ClassDocStats classStats : stats.getClassesDocStats().getClassesList()) {
+        for (final ClassDocStats classStats : getStats().getClassesDocStats().getClassesList()) {
             exportClassDocStats(classStats, writer);
         }
         writer.println();

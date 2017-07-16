@@ -15,6 +15,9 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
+import com.manoelcampos.javadoc.coverage.exporter.ConsoleExporter;
+import com.manoelcampos.javadoc.coverage.exporter.DataExporter;
+import com.manoelcampos.javadoc.coverage.exporter.HtmlExporter;
 import com.sun.javadoc.*;
 import com.sun.tools.doclets.standard.Standard;
 
@@ -26,11 +29,11 @@ import java.io.*;
  * either directly or from maven.
  *
  * @author Manoel Campos da Silva Filho
- * @see ReportGenerator
+ * @see ConsoleExporter
  * @since 1.0.0
  */
 public class CoverageDoclet extends Doclet {
-    private final ReportGenerator generator;
+    private final DataExporter exporter;
     private final RootDoc rootDoc;
 
     /**
@@ -41,7 +44,11 @@ public class CoverageDoclet extends Doclet {
      */
     public CoverageDoclet(final RootDoc rootDoc) {
         this.rootDoc = rootDoc;
-        this.generator = new ReportGenerator(this);
+        try {
+            this.exporter = new HtmlExporter(this);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -97,7 +104,7 @@ public class CoverageDoclet extends Doclet {
      * @return true if the {@link RootDoc} was rendered successfully, false otherwise
      */
     private boolean render() {
-        return generator.start();
+        return exporter.build();
     }
 
     public RootDoc getRootDoc() {
@@ -109,7 +116,7 @@ public class CoverageDoclet extends Doclet {
      *
      * @return the output directory to export the JavaDocs
      */
-    public String getOutputDir() {
+    private String getOutputDir() {
         for (final String[] option : rootDoc.options()) {
             if (option.length == 2 && option[0].equals("-d")) {
                 return Utils.includeTrailingDirSeparator(option[1]);
@@ -134,6 +141,6 @@ public class CoverageDoclet extends Doclet {
             throw new RuntimeException("The directory '" + getOutputDir() + "' was not created due to unknown reason.");
         }
 
-        return new File(dir, fileName + ".txt");
+        return new File(dir, fileName);
     }
 }
