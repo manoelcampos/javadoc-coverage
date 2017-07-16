@@ -7,7 +7,7 @@
     <groupId>com.manoelcampos</groupId>
     <artifactId>javadoc-coverage</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <name>JavaDoc Coverage Maven Plugin</name>
     <description>Maven plugin to generate coverage reports of JavaDoc documentation.</description>
