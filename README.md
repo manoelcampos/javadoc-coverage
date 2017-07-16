@@ -57,7 +57,7 @@ To generate the regular JavaDoc HTML files and the coverage report, you have to 
                         <docletArtifact>
                             <groupId>com.manoelcampos</groupId>
                             <artifactId>javadoc-coverage</artifactId>
-                            <version>1.0.0-SNAPSHOT</version>
+                            <version>1.0.0</version>
                         </docletArtifact>
                     </configuration>
                 </execution>

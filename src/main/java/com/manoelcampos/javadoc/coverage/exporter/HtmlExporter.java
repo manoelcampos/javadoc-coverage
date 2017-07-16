@@ -65,8 +65,8 @@ public class HtmlExporter extends AbstractDataExporter {
         getWriter().println("</head>");
         getWriter().println("<body>");
         getWriter().println("<div class='table-responsive'> ");
+        getWriter().println("<h2>JavaDoc Coverage Report</h2>");
         getWriter().println("<table class='table table-bordered'>");
-        getWriter().println("<caption class='text-center'>JavaDoc Coverage Report</caption>");
         getWriter().println("<thead class='thead-inverse'>");
         getWriter().println("<tr>");
         getWriter().println("<th>Element Type</th><th>Name</th><th>Package</th><th>Documentable Members</th><th>Undocumented</th><th>Documented</th><th>Documented Percent</th>");
