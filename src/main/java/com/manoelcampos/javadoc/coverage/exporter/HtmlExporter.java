@@ -43,7 +43,7 @@ public class HtmlExporter extends AbstractDataExporter {
 
             exportClassesDocStats();
             exportPackagesDocStats();
-            getWriter().printf("<tr>"+COLUMNS+"</tr>", "Project Documentation Coverage", "", "", "", "", "", getStats().getDocumentedMembersPercent());
+            getWriter().printf("<tr>"+COLUMNS+"</tr>", "<strong>Project Documentation Coverage</strong>", "", "", "", "", "", getStats().getDocumentedMembersPercent());
 
             finish();
 
@@ -87,10 +87,9 @@ public class HtmlExporter extends AbstractDataExporter {
         exportMembersDocStatsSummary(getStats().getPackagesDocStats());
         for (final PackageDoc doc : getStats().getPackagesDocStats().getPackagesDoc()) {
             getWriter().println("<tr>");
-            final boolean documented = Utils.isNotStringEmpty(doc.getRawCommentText());
+            final Boolean documented = Utils.isNotStringEmpty(doc.getRawCommentText());
             final double coverage = Utils.boolToInt(documented)*100;
-            getWriter().printf(COLUMNS, "Package", doc.name(), "", "", "", documented, coverage);
-            getWriter().println("</tr>");
+            exportLine(2, "Package", doc.name(), "", "", "", documented.toString(), coverage);
         }
     }
 
@@ -125,17 +124,28 @@ public class HtmlExporter extends AbstractDataExporter {
             return;
         }
 
-        getWriter().println("<tr>");
-        final int len = indentLevel*4 - 3;
-        final String type = String.format("%"+len+"s", "").replace(" ", "&nbsp;") + membersDocStats.getType();
-        getWriter().printf(COLUMNS,
-                type,
-                name, pkg,
+        exportLine(
+                indentLevel, membersDocStats.getType(), name, pkg,
                 membersDocStats.getMembersNumber(),
                 membersDocStats.getUndocumentedMembers(),
                 membersDocStats.getDocumentedMembers(),
                 membersDocStats.getDocumentedMembersPercent());
+    }
+
+    private void exportLine(int indentLevel, String memberType, String name, String pkg, Long members, Long undocumented, Long documented, double documentedPercent){
+        exportLine(indentLevel, memberType, name, pkg, memberType.toString(), undocumented.toString(), documented.toString(), documentedPercent);
+    }
+
+    private void exportLine(int indentLevel, String memberType, String name, String pkg, String members, String undocumented, String documented, double documentedPercent){
+        getWriter().println("<tr>");
+        final String type = getIndentation(indentLevel) + memberType;
+        getWriter().printf(COLUMNS, type, name, pkg, members, undocumented, documented, documentedPercent);
         getWriter().println("</tr>");
+    }
+
+    private String getIndentation(final int indentLevel) {
+        final int len = indentLevel*4 - 3;
+        return String.format("%"+len+"s", "").replace(" ", "&nbsp;");
     }
 
 }
