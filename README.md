@@ -1,6 +1,8 @@
 # JavaDoc Coverage Maven Plugin 
 [![Build Status](https://img.shields.io/travis/manoelcampos/javadoc-coverage/master.svg)](https://travis-ci.org/manoelcampos/javadoc-coverage) [![Dependency Status](https://www.versioneye.com/user/projects/5968248d368b08001a803892/badge.svg?style=rounded-square)](https://www.versioneye.com/user/projects/5968248d368b08001a803892) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0fef8ada2def4d239931f90a50a3f778)](https://www.codacy.com/app/manoelcampos/javadoc-coverage?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/javadoc-coverage&amp;utm_campaign=Badge_Grade) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.manoelcampos/javadoc-coverage/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.manoelcampos/javadoc-coverage) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
+![](coverage-report-sample.png)
+
 A Maven plugin to generate JavaDoc coverage reports. It parses the java source files and checks the percentage of the Java code covered by JavaDoc documentation, including:
 - packages (*Java 9 modules not supported yet*)
 - classes, inner classes, interfaces and enums
