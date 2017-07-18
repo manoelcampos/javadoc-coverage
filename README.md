@@ -78,3 +78,51 @@ mvn clean package
 After that, the documentation coverage report `javadoc-coverage.html` is generated into the default JavaDocs directory, usually at `target/site/apidocs/`.
 
 There is a maven [sample project](sample-project) where you can test the plugin. Just execute the command above inside the project's directory to see the results.
+
+# Excluding packages from the coverage report
+If you want to ignore some packages from the coverage report, you can include a configuration for the javadoc-coverage plugin.
+The example below shows how to ignore the `com.manoelcampos.sample2` package from coverage report for the [sample-project](sample-project),
+while covering all packages for generation of the regular JavaDoc HTML files.
+
+The `<excludePackageNames>` tag is used for that purpose. It accepts a list of packages separated by `:` and also accepts wildcards such as `*`.
+For more details, check this [link](https://maven.apache.org/plugins/maven-javadoc-plugin/examples/exclude-package-names.html).
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>2.10.4</version>
+    <configuration>
+        <encoding>UTF-8</encoding>
+    </configuration>
+    <executions>
+        <!-- Exports JavaDocs to regular HTML files -->
+        <execution>
+            <id>javadoc-html</id>
+            <phase>package</phase>
+            <goals>
+                <goal>javadoc</goal>
+            </goals>
+        </execution>
+
+        <!-- Generates the JavaDoc coverage report -->
+        <execution>
+            <id>javadoc-coverage</id>
+            <phase>package</phase>
+            <goals>
+                <goal>javadoc</goal>
+            </goals>
+            <configuration>
+                <doclet>com.manoelcampos.javadoc.coverage.CoverageDoclet</doclet>
+                <docletArtifact>
+                    <groupId>com.manoelcampos</groupId>
+                    <artifactId>javadoc-coverage</artifactId>
+                    <version>1.0.0</version>
+                </docletArtifact>
+                <!-- Excludes packages from the coverage report. -->
+                <excludePackageNames>com.manoelcampos.sample2</excludePackageNames>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
