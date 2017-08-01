@@ -96,9 +96,6 @@ If you are generating a maven site and want to include the regular JavaDocs HTML
                     <reports>
                         <report>javadoc</report>
                     </reports>
-                    <configuration>
-                        <encoding>${encoding}</encoding>
-                    </configuration>
                 </reportSet>
 
                 <reportSet>
@@ -110,7 +107,6 @@ If you are generating a maven site and want to include the regular JavaDocs HTML
                     <configuration>
                         <name>JavaDoc Coverage</name>
                         <description>Percentage of the code coverage by JavaDoc documentation.</description>
-                        <encoding>${encoding}</encoding>
                         <doclet>com.manoelcampos.javadoc.coverage.CoverageDoclet</doclet>
                         <docletArtifact>
                             <groupId>com.manoelcampos</groupId>
