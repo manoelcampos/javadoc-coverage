@@ -19,27 +19,40 @@ import com.manoelcampos.javadoc.coverage.Utils;
 
 /**
  * An interface to be implemented by classes
- * computing JavaDoc statistics.
+ * computing JavaDoc coverage statistics.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
 public interface DocStats {
     /**
-     * The type of the element to which JavaDoc statistics is being computed,
-     * if a class, interface, field, method, method parameter, etc.
+     * The type of the element to which JavaDoc coverage statistics is being computed,
+     * whether a class, interface, field, method, parameter, etc.
      * @return the type of elements
      */
     String getType();
 
+    /**
+     * Gets the number of documented members contained into
+     * the object for which the JavaDoc coverage statistics is being computed.
+     *
+     * @return the number of members having JavaDoc documentation
+     */
     long getDocumentedMembers();
 
+    /**
+     * Gets the number of undocumented members contained into
+     * the object for which the JavaDoc coverage statistics is being computed.
+     *
+     * @return the number of members <b>not</b> having JavaDoc documentation
+     */
     default long getUndocumentedMembers() {
         return getMembersNumber() - getDocumentedMembers();
     }
 
     /**
-     * Gets the percentage of members that are documented.
+     * Gets the percentage of documented members contained into
+     * the object for which the JavaDoc coverage statistics is being computed.
      *
      * @return the percentage of documented members, in scale from 0 to 100.
      */
@@ -47,5 +60,11 @@ public interface DocStats {
         return Utils.computePercentage(getDocumentedMembers(), getMembersNumber());
     }
 
+    /**
+     * Gets the total number of members contained into
+     * the object for which the JavaDoc coverage statistics is being computed.
+     *
+     * @return the total number of members
+     */
     long getMembersNumber();
 }

@@ -24,12 +24,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Computes JavaDoc coverage statistics for a list of classes.
+ *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
 public class ClassesDocStats extends MembersDocStats {
     private final List<ClassDocStats> classesDocStats;
 
+    /**
+     * Instantiates an object to compute JavaDoc coverage statistics for a list of classes.
+     *
+     * @param docs an array of elements which enables reading the classes' JavaDoc documentation
+     */
     public ClassesDocStats(final ClassDoc[] docs){
         classesDocStats = new ArrayList<>(docs.length);
         for (final ClassDoc doc : docs) {
@@ -52,13 +59,18 @@ public class ClassesDocStats extends MembersDocStats {
         return classesDocStats.stream().map(ClassDocStats::getDoc).map(Doc::getRawCommentText).filter(Utils::isNotStringEmpty).count();
     }
 
+    /**
+     * Gets a List where each element represents the individual JavaDoc coverage statistics for a specific class.
+     *
+     * @return a List of class's JavaDoc coverage statistics
+     */
     public List<ClassDocStats> getClassesList() {
         return Collections.unmodifiableList(classesDocStats);
     }
 
     /**
      * A set of classes doesn't have documentation,
-     * only individual classes have.
+     * only each individual class may have.
      * @return
      */
     @Override

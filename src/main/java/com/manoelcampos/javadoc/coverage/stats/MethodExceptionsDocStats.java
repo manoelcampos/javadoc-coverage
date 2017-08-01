@@ -18,15 +18,21 @@ package com.manoelcampos.javadoc.coverage.stats;
 import com.sun.javadoc.ExecutableMemberDoc;
 
 /**
- * Computes statistics about the JavaDocs of the exceptions thrown by a specific method.
+ * Computes JavaDoc coverage statistics for the exceptions thrown by a specific method.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
 public class MethodExceptionsDocStats extends MethodTagsDocStats {
 
-    MethodExceptionsDocStats(final ExecutableMemberDoc methodDoc) {
-        super(methodDoc);
+    /**
+     * Instantiates an object to compute JavaDoc coverage statistics for the exceptions thrown
+     * by a method/constructor.
+     *
+     * @param doc the element which enables reading the method's JavaDoc documentation
+     */
+    MethodExceptionsDocStats(final ExecutableMemberDoc doc) {
+        super(doc);
     }
 
     @Override
@@ -43,5 +49,4 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
     public String getTagName() {
         return "@throws";
     }
-
 }

@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Computes statistics about the JavaDocs of packages.
+ * Computes JavaDoc statistics for a set of packages.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
@@ -35,6 +35,11 @@ public class PackagesDocStats extends MembersDocStats {
         this.packagesDoc = new HashSet<>();
     }
 
+    /**
+     * Adds an element to the Set of elements containing packages' JavaDocs.
+     *
+     * @param doc the package's JavaDoc element to add to the Set
+     */
     public void addPackageDoc(final PackageDoc doc){
         packagesDoc.add(doc);
     }
@@ -54,13 +59,18 @@ public class PackagesDocStats extends MembersDocStats {
         return packagesDoc.stream().map(PackageDoc::getRawCommentText).filter(Utils::isNotStringEmpty).count();
     }
 
+    /**
+     * Gets a Set of elements containing packages' JavaDocs.
+     *
+     * @return the Set of packages' JavaDocs
+     */
     public Set<PackageDoc> getPackagesDoc() {
         return Collections.unmodifiableSet(packagesDoc);
     }
 
     /**
      * A set of packages doesn't have documentation,
-     * only individual packages have.
+     * only each individual package may have.
      * @return
      */
     @Override

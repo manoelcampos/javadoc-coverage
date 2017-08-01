@@ -20,12 +20,11 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.RootDoc;
 
 /**
- * Computes statistics about the coverage of JavaDocs comments inside the
- * Java files received by the JavaDoc tool.
+ * Computes JavaDoc coverage statistics for Java files received by the JavaDoc tool.
  *
  * <p>It's the main class to store JavaDocs statistics for any kind of
  * documentable element into a Java source file.
- * It include the computed statistics for an entire Java project
+ * It includes the computed statistics for an entire Java project
  * parsed by the JavaDoc Tool.</p>
  *
  * @author Manoel Campos da Silva Filho
@@ -40,12 +39,23 @@ public class JavaDocsStats implements DocStats {
     private final PackagesDocStats packagesDocStats;
     private final ClassesDocStats classesDocStats;
 
+    /**
+     * Instantiates an object to compute JavaDoc coverage statistics for all Java files
+     * received by the JavaDoc tool.
+     *
+     * @param rootDoc root element which enables reading JavaDoc documentation
+     */
     public JavaDocsStats(final RootDoc rootDoc) {
         this.rootDoc = rootDoc;
         this.classesDocStats = new ClassesDocStats(rootDoc.classes());
         this.packagesDocStats = computePackagesDocsStats();
     }
 
+    /**
+     * Computes JavaDoc coverage statistics for detected packages.
+     *
+     * @return packages' JavaDoc coverage statistics
+     */
     private PackagesDocStats computePackagesDocsStats() {
         final PackagesDocStats stats = new PackagesDocStats();
         for (final ClassDoc doc : rootDoc.classes()) {
@@ -55,12 +65,22 @@ public class JavaDocsStats implements DocStats {
         return stats;
     }
 
+    /**
+     * Gets the object containing JavaDoc coverage statistics for detected packages.
+     *
+     * @return packages' JavaDoc coverage statistics
+     * @see #computePackagesDocsStats()
+     */
     public PackagesDocStats getPackagesDocStats() {
         return packagesDocStats;
     }
 
+    /**
+     * Gets the object containing JavaDoc coverage statistics for detected classes.
+     *
+     * @return classes' JavaDoc coverage statistics
+     */
     public ClassesDocStats getClassesDocStats() { return classesDocStats; }
-
 
     @Override
     public String getType() {

@@ -22,16 +22,27 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Computes statistics about the JavaDocs of specific type of members of a class, interface or enum.
+ * Computes JavaDoc coverage statistics for specific type of members belonging to an owner.
+ * An owner can be a class, interface or enum.
  * Members may be either fields, methods or constructors.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
 public class ClassMembersDocStats extends MembersDocStats {
+    /**
+     * The JavaDoc documentation for the members of the owner.
+     */
     private final Doc[] membersDocs;
     private final String membersType;
 
+    /**
+     * Instantiates an object to compute JavaDoc coverage statistics
+     * for the members of a class, interface or enum.
+     *
+     * @param membersDocs the JavaDoc documentation for the members of the owner.
+     * @param membersType the type of the members of the owner to compute JavaDoc coverage statistics.
+     */
     ClassMembersDocStats(final Doc[] membersDocs, final String membersType) {
         this.membersDocs = membersDocs;
         this.membersType = membersType;
@@ -40,6 +51,7 @@ public class ClassMembersDocStats extends MembersDocStats {
     /**
      * Gets the number of members which are explicitly declared into the source code,
      * from a list of given members.
+     *
      * The length of the given array cannot be used to this purpose
      * because some elements such as default no-args constructors are not directly declared
      * into the source class but are counted as a member.
@@ -67,7 +79,7 @@ public class ClassMembersDocStats extends MembersDocStats {
 
     /**
      * A set of class members doesn't have documentation,
-     * only individual members have.
+     * only each individual member may have.
      * @return
      */
     @Override

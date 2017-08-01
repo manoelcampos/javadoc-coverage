@@ -17,7 +17,9 @@ package com.manoelcampos.javadoc.coverage.exporter;
 
 import com.manoelcampos.javadoc.coverage.CoverageDoclet;
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.stats.*;
+import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
+import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
+import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
 import com.sun.javadoc.PackageDoc;
 
 import java.io.FileNotFoundException;
@@ -37,24 +39,12 @@ public class HtmlExporter extends AbstractDataExporter {
     }
 
     @Override
-    public boolean build(){
-        try{
-            start();
-
-            exportClassesDocStats();
-            exportPackagesDocStats();
-            getWriter().printf("<tr>"+COLUMNS+"</tr>", "<strong>Project Documentation Coverage</strong>", "", "", "", "", "", getStats().getDocumentedMembersPercent());
-
-            finish();
-
-            System.out.printf("\nJavaDoc Coverage report saved to %s\n", getFile().getAbsolutePath());
-            return true;
-        } finally {
-            getWriter().close();
-        }
+    protected void exportProjectDocumentationCoverageSummary() {
+        getWriter().printf("<tr>" + COLUMNS + "</tr>", "<strong>Project Documentation Coverage</strong>", "", "", "", "", "", getStats().getDocumentedMembersPercent());
     }
 
-    private void start() {
+    @Override
+    protected void header() {
         getWriter().println("<!DOCTYPE html>\n<html lang=en>");
         getWriter().println("<head>");
         getWriter().println("    <title>JavaDoc Coverage Report</title>");
@@ -75,15 +65,16 @@ public class HtmlExporter extends AbstractDataExporter {
         getWriter().println("<tbody>");
     }
 
-    private void finish() {
+    @Override
+    protected void footer() {
         getWriter().println("</tbody>");
         getWriter().println("</table>");
         getWriter().println("</div>");
         getWriter().println("</body>");
-        getWriter().flush();
     }
 
-    private void exportPackagesDocStats() {
+    @Override
+    protected void exportPackagesDocStats() {
         exportMembersDocStatsSummary(getStats().getPackagesDocStats());
         for (final PackageDoc doc : getStats().getPackagesDocStats().getPackagesDoc()) {
             getWriter().println("<tr>");
@@ -93,7 +84,8 @@ public class HtmlExporter extends AbstractDataExporter {
         }
     }
 
-    private void exportClassesDocStats() {
+    @Override
+    protected void exportClassesDocStats() {
         exportMembersDocStatsSummary(getStats().getClassesDocStats());
         for (final ClassDocStats classDocStats : getStats().getClassesDocStats().getClassesList()) {
             exportMembersDocStatsSummary(classDocStats, 2, classDocStats.getName(), classDocStats.getPackageName());
@@ -148,4 +140,8 @@ public class HtmlExporter extends AbstractDataExporter {
         return String.format("%"+len+"s", "").replace(" ", "&nbsp;");
     }
 
+    @Override
+    public void afterBuild() {
+        System.out.printf("\nJavaDoc Coverage report saved to %s\n", getFile().getAbsolutePath());
+    }
 }

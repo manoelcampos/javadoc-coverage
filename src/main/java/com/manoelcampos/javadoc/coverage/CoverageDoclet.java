@@ -18,29 +18,44 @@ package com.manoelcampos.javadoc.coverage;
 import com.manoelcampos.javadoc.coverage.exporter.ConsoleExporter;
 import com.manoelcampos.javadoc.coverage.exporter.DataExporter;
 import com.manoelcampos.javadoc.coverage.exporter.HtmlExporter;
-import com.sun.javadoc.*;
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.Doclet;
+import com.sun.javadoc.LanguageVersion;
+import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
 
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * A {@link Doclet} that computes coverage of JavaDoc documentation.
  * It is the entry point for the JavaDoc Tool, which can be executed
- * either directly or from maven.
+ * either directly using the JavaDoc command line tool or from maven.
  *
  * @author Manoel Campos da Silva Filho
  * @see ConsoleExporter
  * @since 1.0.0
+ * @see <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/javadoc/doclet/overview.html">Doclet Overview</a>
  */
-public class CoverageDoclet extends Doclet {
+public class CoverageDoclet {
+    /**
+     * A command line parameter to enable defining the name of the coverage report.
+     * The first value is the long version of the parameter name and the second
+     * is the short one.
+     */
+    public static final String OUTPUT_NAME_OPTION[] = {"-outputName", "-o"};
+
+    /**
+     * The {@link DataExporter} object to export the coverage report to a file
+     * in a specific format.
+     */
     private final DataExporter exporter;
     private final RootDoc rootDoc;
 
     /**
-     * Creates a ExportDoclet to export javadoc.
+     * Instantiate the Doclet which will parse the JavaDocs and generate the coverage report.
      *
-     * @param rootDoc the root of the program structure information.
-     *                From this root all other program structure information can be extracted.
+     * @param rootDoc root element which enables reading JavaDoc documentation
      */
     public CoverageDoclet(final RootDoc rootDoc) {
         this.rootDoc = rootDoc;
@@ -52,11 +67,37 @@ public class CoverageDoclet extends Doclet {
     }
 
     /**
-     * Starts the doclet.
+     * Checks if a given parameter is a valid custom parameter accepted by this doclet.
+     * @param paramName the name of the parameter to check
+     * @return true if it's a valid custom parameter, false otherwise
+     */
+    private static boolean isCustomParameter(final String paramName) {
+        return isParameter(paramName, OUTPUT_NAME_OPTION);
+    }
+
+    /**
+     * Checks if the name of a given parameter corresponds to either its long or short form.
      *
-     * @param rootDoc the root of the program structure information.
-     *                From this root all other program structure information can be extracted.
-     * @return true if the doclet was started successfully, false otherwise
+     * @param paramName the name of the parameter to check
+     * @param validNames the list of accepted names for that parameter
+     * @return true if the given name corresponds to one of the valid names, false otherwise
+     */
+    private static boolean isParameter(final String paramName, final String[] validNames) {
+        for (String validName : validNames) {
+            if (validName.equalsIgnoreCase(paramName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Starts the actual parsing or JavaDoc documentation and generation of the coverage report.
+     * This is the entry point for the JavaDoc tool to start the Doclet.
+     *
+     * @param rootDoc root element which enables reading JavaDoc documentation
+     * @return true if the Doclet was started successfully, false otherwise
      * @see Doclet#start(RootDoc)
      */
     public static boolean start(final RootDoc rootDoc) {
@@ -72,6 +113,12 @@ public class CoverageDoclet extends Doclet {
      * @see Doclet#validOptions(String[][], DocErrorReporter)
      */
     public static boolean validOptions(final String[][] options, final DocErrorReporter errorReporter) {
+        for (final String[] opt : options) {
+            if (isCustomParameter(opt[0])) {
+                return true;
+            }
+        }
+
         return Standard.validOptions(options, errorReporter);
     }
 
@@ -83,7 +130,32 @@ public class CoverageDoclet extends Doclet {
      * @see Doclet#optionLength(String)
      */
     public static int optionLength(final String option) {
+        /*The custom outputName parameter accepts one argument.
+        * The name of the param counts as the one argument.*/
+        if (isCustomParameter(option)) {
+            return 2;
+        }
+
         return Standard.optionLength(option);
+    }
+
+    /**
+     * Gets the values associated to a given command line option.
+     *
+     * @param optionNames an array containing the valid names for the command line option to get its associated values.
+     *                    This array may include the long and short versions of the option name,
+     *                    for instance {@code {-outputName, -o}}.
+     * @return the values associated to the option, where the 0th element is the option itself;
+     * or an empty array if the option is invalid.
+     */
+    public String[] getOptionValues(final String[] optionNames) {
+        for (final String[] optionValues : rootDoc.options()) {
+            if (isParameter(optionValues[0], optionNames)) {
+                return optionValues;
+            }
+        }
+
+        return new String[]{};
     }
 
     /**
@@ -98,8 +170,8 @@ public class CoverageDoclet extends Doclet {
     }
 
     /**
-     * Renders the javadoc documentation for all elements inside the {@link RootDoc} object
-     * received by this doclet.
+     * Renders the JavaDoc documentation for all elements inside the {@link RootDoc} object
+     * received by this Doclet.
      *
      * @return true if the {@link RootDoc} was rendered successfully, false otherwise
      */
@@ -107,8 +179,37 @@ public class CoverageDoclet extends Doclet {
         return exporter.build();
     }
 
+    /**
+     * Gets the root element which enables reading JavaDoc documentation
+     * from the Java files given to the JavaDoc tool.
+     */
     public RootDoc getRootDoc() {
         return rootDoc;
+    }
+
+    /**
+     * Gets a {@link PrintWriter} used by the {@link #exporter} to write
+     * the coverage report to.
+     *
+     * @param file the file to which the coverage report will be saved to
+     */
+    public PrintWriter getWriter(final File file) throws FileNotFoundException {
+        return new PrintWriter(new OutputStreamWriter(new FileOutputStream(file)));
+    }
+
+    /**
+     * Gets a {@link File} object from a given file name.
+     *
+     * @param fileName the name of the file to get a {@link File} object.
+     * @return the {@link File} object
+     */
+    public File getOutputFile(final String fileName) {
+        final File dir = new File(getOutputDir());
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new RuntimeException("The directory '" + getOutputDir() + "' was not created due to unknown reason.");
+        }
+
+        return new File(dir, fileName);
     }
 
     /**
@@ -118,29 +219,15 @@ public class CoverageDoclet extends Doclet {
      */
     private String getOutputDir() {
         for (final String[] option : rootDoc.options()) {
+            System.out.println(Arrays.toString(option));
+        }
+
+        for (final String[] option : rootDoc.options()) {
             if (option.length == 2 && option[0].equals("-d")) {
                 return Utils.includeTrailingDirSeparator(option[1]);
             }
         }
 
         return "";
-    }
-
-    /**
-     * Gets a {@link PrintWriter} to export the documentation of a class or package.
-     *
-     * @param file the file to export the documentation to
-     */
-    public PrintWriter getWriter(final File file) throws FileNotFoundException {
-        return new PrintWriter(new OutputStreamWriter(new FileOutputStream(file)));
-    }
-
-    public File getOutputFile(final String fileName) {
-        final File dir = new File(getOutputDir());
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new RuntimeException("The directory '" + getOutputDir() + "' was not created due to unknown reason.");
-        }
-
-        return new File(dir, fileName);
     }
 }

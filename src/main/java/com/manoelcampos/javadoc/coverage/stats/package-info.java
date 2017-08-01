@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
- * Constains {@link com.manoelcampos.javadoc.coverage.stats.DocStats} classes
- * used to compute JavaDoc statistics for Java elements such as
- * classes, interfaces, fields, methods, method parameters, etc.
+ * Contains {@link com.manoelcampos.javadoc.coverage.stats.DocStats} classes
+ * used to compute JavaDoc coverage statistics for Java elements such as
+ * classes, interfaces, fields, methods, parameters, etc.
  *
  * @author Manoel Campos da Silva Filho
  */

@@ -17,16 +17,16 @@ package com.manoelcampos.javadoc.coverage.exporter;
 
 import com.manoelcampos.javadoc.coverage.CoverageDoclet;
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.exporter.DataExporter;
 import com.manoelcampos.javadoc.coverage.stats.*;
 import com.sun.javadoc.PackageDoc;
-import com.sun.javadoc.RootDoc;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * Prints the JavaDoc coverage report to the console.
+ * Prints the JavaDoc coverage report to the console (standard output).
+ *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
@@ -36,72 +36,69 @@ public class ConsoleExporter extends AbstractDataExporter {
         super(doclet);
     }
 
-    /**
-     * Exports classes and packages JavaDocs, inside a {@link RootDoc} object.
-     *
-     * @return true if successful, false otherwise
-     */
     @Override
-    public boolean build() {
-        try (final PrintWriter writer = new PrintWriter(System.out)) {
-            exportClassesDocStats(writer);
-            exportPackagesDocStats(writer);
-            writer.printf("Project Documentation Coverage: %.2f%%\n\n", getStats().getDocumentedMembersPercent());
-            writer.flush();
-        }
+    protected void header() {/**/}
 
-        return true;
+    @Override
+    protected void footer() {/**/}
+
+    @Override
+    public void afterBuild() {/**/}
+
+    @Override
+    protected void exportProjectDocumentationCoverageSummary() {
+        getWriter().printf("Project Documentation Coverage: %.2f%%\n\n", getStats().getDocumentedMembersPercent());
     }
 
-    private void exportPackagesDocStats(final PrintWriter writer) {
+    @Override
+    protected void exportPackagesDocStats() {
         final PackagesDocStats packagesDocStats = getStats().getPackagesDocStats();
-        exportPkgsOrClassesDocStats(writer, packagesDocStats);
-        packagesDocStats.getPackagesDoc().forEach(pkg -> exportPackageDocStats(pkg, writer));
-        writer.println();
+        exportPkgsOrClassesDocStats(packagesDocStats);
+        packagesDocStats.getPackagesDoc().forEach(pkg -> exportPackageDocStats(pkg));
+        getWriter().println();
     }
 
-    private void exportPkgsOrClassesDocStats(PrintWriter writer, MembersDocStats packagesDocStats) {
-        writer.printf("%-26s: \t%11d Undocumented: %6d Documented: %6d (%.2f%%)\n",
+    private void exportPkgsOrClassesDocStats(MembersDocStats packagesDocStats) {
+        getWriter().printf("%-26s: \t%11d Undocumented: %6d Documented: %6d (%.2f%%)\n",
                 packagesDocStats.getType(), packagesDocStats.getMembersNumber(), packagesDocStats.getUndocumentedMembers(),
                 packagesDocStats.getDocumentedMembers(), packagesDocStats.getDocumentedMembersPercent());
     }
 
     /**
      * Exports the statistics about JavaDoc coverage of a given package.
+     *  @param doc the object containing the JavaDoc coverage data
      *
-     * @param doc the object containing the JavaDoc coverage data
-     * @param writer the {@link PrintWriter} used to output the statistics.
      */
-    private void exportPackageDocStats(final PackageDoc doc, final PrintWriter writer) {
-        writer.printf("\tPackage %s. Documented: %s\n", doc.name(), Utils.isNotStringEmpty(doc.commentText()));
+    private void exportPackageDocStats(final PackageDoc doc) {
+        getWriter().printf("\tPackage %s. Documented: %s\n", doc.name(), Utils.isNotStringEmpty(doc.commentText()));
     }
 
-    private void exportClassesDocStats(final PrintWriter writer) {
+    @Override
+    protected void exportClassesDocStats() {
         final ClassesDocStats classesDocStats = getStats().getClassesDocStats();
-        exportPkgsOrClassesDocStats(writer, classesDocStats);
+        exportPkgsOrClassesDocStats(classesDocStats);
 
         for (final ClassDocStats classStats : getStats().getClassesDocStats().getClassesList()) {
-            exportClassDocStats(classStats, writer);
+            exportClassDocStats(classStats);
         }
-        writer.println();
+        getWriter().println();
     }
 
     /**
      * Exports the statistics about JavaDoc coverage of a given class.
+     *  @param classStats the object containing the JavaDoc coverage data
      *
-     * @param classStats the object containing the JavaDoc coverage data
-     * @param writer the {@link PrintWriter} used to output the statistics.
      */
-    private void exportClassDocStats(final ClassDocStats classStats, final PrintWriter writer) {
-        writer.printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n",
+    private void exportClassDocStats(final ClassDocStats classStats) {
+        getWriter().printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n",
                 classStats.getType(), classStats.getName(), classStats.getPackageName(),
                 classStats.hasDocumentation(), classStats.getDocumentedMembersPercent());
 
-        exportMembersDocStats(writer, classStats.getFieldsStats());
-        exportMethodsDocStats(writer, classStats.getConstructorsStats());
-        exportMethodsDocStats(writer, classStats.getMethodsStats());
-        exportMembersDocStats(writer, classStats.getEnumsStats());
-        writer.flush();
+        exportMembersDocStats(getWriter(), classStats.getFieldsStats());
+        exportMethodsDocStats(getWriter(), classStats.getConstructorsStats());
+        exportMethodsDocStats(getWriter(), classStats.getMethodsStats());
+        exportMembersDocStats(getWriter(), classStats.getEnumsStats());
+        getWriter().flush();
     }
 
     private void exportMethodsDocStats(final PrintWriter writer, final List<MethodDocStats> methodStatsList) {

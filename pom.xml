@@ -7,7 +7,7 @@
     <groupId>com.manoelcampos</groupId>
     <artifactId>javadoc-coverage</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <name>JavaDoc Coverage Maven Plugin</name>
     <description>Maven plugin to generate coverage reports of JavaDoc documentation.</description>
@@ -18,8 +18,12 @@
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+        <encoding>UTF-8</encoding>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+        <project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
+        <archetype.encoding>${encoding}</archetype.encoding>
     </properties>
-
 
     <organization>
         <name>Manoel Campos da Silva Filho</name>
@@ -94,7 +98,8 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <encoding>UTF-8</encoding>
+                            <encoding>${encoding}</encoding>
+                            <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                     </plugin>
 
@@ -180,7 +185,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
@@ -200,6 +204,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.4</version>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
                 <executions>
                     <!-- Exports JavaDocs of the JavaDoc Coverage Plugin to regular HTML files -->
                     <execution>

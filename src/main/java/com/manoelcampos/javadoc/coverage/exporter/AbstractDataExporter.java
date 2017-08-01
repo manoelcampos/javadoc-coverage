@@ -24,6 +24,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 /**
+ * Abstract class to implement JavaDoc Coverage reports in different formats.
+ * Each sub-class should implement a specific format such as HTML, CSV, JSON, etc.
+ *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
@@ -31,26 +34,103 @@ public abstract class AbstractDataExporter implements DataExporter {
     private final JavaDocsStats stats;
     private final PrintWriter writer;
     private File file;
+    private final CoverageDoclet doclet;
+    private final String reportFileName;
 
-    protected AbstractDataExporter(final CoverageDoclet doclet, final String extension) {
-        if(Utils.isNotStringEmpty(extension)) {
-            this.file = doclet.getOutputFile(generateFileName(extension));
+    /**
+     * Instantiates a DataExporter object to generate JavaDoc coverage report.
+     *
+     * @param doclet        the {@link CoverageDoclet} which computes teh JavaDoc coverage statistics.
+     * @param fileExtension the extension to the report file. If empty, the report will be printed to the standard output.
+     */
+    protected AbstractDataExporter(final CoverageDoclet doclet, final String fileExtension) {
+        this.doclet = doclet;
+
+        if (Utils.isStringEmpty(fileExtension)) {
+            writer = new PrintWriter(System.out);
+            this.reportFileName = "";
+        } else {
+            this.reportFileName = generateReportFileName(fileExtension);
             try {
                 this.writer = doclet.getWriter(file);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
-        } else writer = new PrintWriter(System.out);
+        }
 
         this.stats = new JavaDocsStats(doclet.getRootDoc());
     }
 
-    private String generateFileName(final String extension) {
-        return extension.startsWith(".") ? COVERAGE_REPORT_FILE + extension : COVERAGE_REPORT_FILE + "." + extension;
-    }
-
+    /**
+     * Instantiates a DataExporter object that generates JavaDoc coverage report to the standard output.
+     *
+     * @param doclet the {@link CoverageDoclet} which computes teh JavaDoc coverage statistics.
+     */
     protected AbstractDataExporter(final CoverageDoclet doclet) throws FileNotFoundException {
         this(doclet, "");
+    }
+
+    private String generateReportFileName(final String fileExtension) {
+        String fileName = getFileNameFromCommandLine();
+        fileName = fileName + fileExtensionToAdd(fileName, fileExtension);
+        this.file = doclet.getOutputFile(fileName);
+        return fileName;
+    }
+
+    /**
+     * Gets the JavaDoc Coverage Report file name from command line options
+     * or the default name if no option is given.
+     *
+     * @return
+     * @see CoverageDoclet#OUTPUT_NAME_OPTION
+     */
+    private String getFileNameFromCommandLine() {
+        final String[] outputNameOption = doclet.getOptionValues(CoverageDoclet.OUTPUT_NAME_OPTION);
+        return outputNameOption.length > 1 ? outputNameOption[1] : DEFAULT_OUTPUT_NAME;
+    }
+
+    /**
+     * Gets the extension to add to a given file if it doesn't have one.
+     *
+     * @param fileName             the file name to try getting and extension to add
+     * @param defaultFileExtension the default file extension to return if the file doesn't have one
+     * @return the file extension to add to the file it it doesn't have one or an empty string
+     * if it already has.
+     */
+    private String fileExtensionToAdd(final String fileName, final String defaultFileExtension) {
+        return Utils.getFileExtension(fileName).isEmpty() ?
+                getFileExtensionStartingWithDot(defaultFileExtension) : "";
+    }
+
+    /**
+     * Adds a dot to the beginning of a file extension if it doesn't have one.
+     *
+     * @param fileExtension the file extension
+     * @return the validated file extension
+     */
+    private String getFileExtensionStartingWithDot(String fileExtension) {
+        return fileExtension.startsWith(".") ? fileExtension : "." + fileExtension;
+    }
+
+    @Override
+    public String getReportFileName() {
+        return this.reportFileName;
+    }
+
+    @Override
+    public boolean build() {
+        try {
+            header();
+            exportClassesDocStats();
+            exportPackagesDocStats();
+            exportProjectDocumentationCoverageSummary();
+            footer();
+            afterBuild();
+            getWriter().flush();
+            return true;
+        } finally {
+            getWriter().close();
+        }
     }
 
     protected PrintWriter getWriter() {
@@ -64,4 +144,16 @@ public abstract class AbstractDataExporter implements DataExporter {
     public File getFile() {
         return file;
     }
+
+    protected abstract void exportProjectDocumentationCoverageSummary();
+
+    protected abstract void header();
+
+    protected abstract void footer();
+
+    protected abstract void afterBuild();
+
+    protected abstract void exportPackagesDocStats();
+
+    protected abstract void exportClassesDocStats();
 }

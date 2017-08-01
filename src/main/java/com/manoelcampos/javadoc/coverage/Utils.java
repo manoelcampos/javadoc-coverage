@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.stream.DoubleStream;
 
 /**
- * An utility class.
+ * A class providing some utility methods.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
@@ -61,6 +61,7 @@ public final class Utils {
 
     /**
      * Computes the percentage that a partial value corresponds to a given total.
+     *
      * @param partialValue the partial value to compute the percentage related to the total value
      * @param totalValue the total the partial value corresponds to
      * @return the percentage (in scale from 0 to 100) the partial value represents from the total
@@ -74,6 +75,12 @@ public final class Utils {
 
     }
 
+    /**
+     * Computes the mean value from a list of values.
+     *
+     * @param values the values to compute the mean from
+     * @return the computed mean
+     */
     public static double mean(final double... values){
         if(values == null){
             return 0;
@@ -82,9 +89,35 @@ public final class Utils {
         return average(Arrays.stream(values));
     }
 
+    /**
+     * Computes the mean value from a Stream of values.
+     *
+     * @param stream the Stream of values to compute the mean from
+     * @return the computed mean
+     */
     public static double average(final DoubleStream stream) {
         return stream.average().orElse(0);
     }
 
-    public static int boolToInt(final boolean bool){ return bool ? 1 : 0; }
+    /**
+     * Converts a boolean to its corresponding int
+     *
+     * @param bool the boolean value to convert
+     * @return 1 whether the bool is equal to true; 0 otherwise
+     */
+    public static int boolToInt(final boolean bool) {
+        return bool ? 1 : 0;
+    }
+
+    /**
+     * Gets the extension of a file.
+     *
+     * @param fileName the name of the file
+     * @return the file extension, including the dot, or an empty string
+     * if there isn't a extension
+     */
+    public static String getFileExtension(final String fileName) {
+        final int i = fileName.lastIndexOf('.');
+        return i > 0 ? fileName.substring(i) : "";
+    }
 }

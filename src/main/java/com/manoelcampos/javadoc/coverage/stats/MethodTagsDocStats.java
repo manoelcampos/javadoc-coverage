@@ -22,8 +22,11 @@ import com.sun.javadoc.Tag;
 import java.util.Arrays;
 
 /**
- * Computes statistics about the JavaDocs of a set of tags
- * associated to a method, such as the {@code @param} and {@code @throws} tags.
+ * An abstract class to compute JavaDoc statistics for a set of tags
+ * associated to a method/constructor, such as the {@code @param} and {@code @throws} tags.
+ *
+ * Each {@link MethodTagsDocStats} sub-class is accountable to compute
+ * statistics to a specific kind of tag such as method's parameters or thrown exceptions.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
@@ -31,11 +34,24 @@ import java.util.Arrays;
 public abstract class MethodTagsDocStats extends MembersDocStats {
     private final ExecutableMemberDoc doc;
 
+    /**
+     * Instantiates an object to compute JavaDoc coverage statistics for the tags
+     * of a method/constructor.
+     *
+     * @param doc the element which enables reading the method's JavaDoc documentation
+     */
     MethodTagsDocStats(final ExecutableMemberDoc doc) {
         super();
         this.doc = doc;
     }
 
+    /**
+     * The name of the tags associated to this object for which
+     * JavaDoc coverage statistics will be computed, for instance,
+     * "param" or "throws" tags.
+     *
+     * @return
+     */
     public abstract String getTagName();
 
     @Override
@@ -47,6 +63,11 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
                 .count();
     }
 
+    /**
+     * Gets the element which enables reading the method's JavaDoc documentation.
+     *
+     * @return the method's JavaDoc documentation element
+     */
     ExecutableMemberDoc getDoc() {
         return doc;
     }

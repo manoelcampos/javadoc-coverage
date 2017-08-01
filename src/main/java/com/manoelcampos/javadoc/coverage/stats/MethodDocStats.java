@@ -22,7 +22,7 @@ import com.sun.javadoc.Tag;
 import java.util.Arrays;
 
 /**
- * Computes statistics about the JavaDocs of a method
+ * Computes JavaDoc coverage statistics for a method/constructor
  * and its members, such as: parameters and thrown exceptions.
  *
  * @author Manoel Campos da Silva Filho
@@ -33,6 +33,11 @@ public class MethodDocStats extends MembersDocStats {
     private final MethodParamsDocStats paramsStats;
     private final MethodExceptionsDocStats thrownExceptions;
 
+    /**
+     * Instantiates an object to compute JavaDoc coverage statistics for a method/constructor.
+     *
+     * @param doc the element which enables reading the method's JavaDoc documentation
+     */
     MethodDocStats(final ExecutableMemberDoc doc) {
         this.doc = doc;
         this.paramsStats = new MethodParamsDocStats(doc);
@@ -41,7 +46,7 @@ public class MethodDocStats extends MembersDocStats {
     }
 
     /**
-     * Indicates if the return value of the method is documented.
+     * Checks if the return value of the method/constructor is documented or not.
      *
      * @return true if the return value is documented, false otherwise.
      */
@@ -63,10 +68,20 @@ public class MethodDocStats extends MembersDocStats {
         return doc.isConstructor() ? "Constructor" : "Method";
     }
 
+    /**
+     * Gets the JavaDoc coverage statistics for the method/constructor's parameters.
+     *
+     * @return
+     */
     public MethodParamsDocStats getParamsStats() {
         return paramsStats;
     }
 
+    /**
+     * Gets the JavaDoc coverage statistics for the exceptions thrown by the method/constructor.
+     *
+     * @return
+     */
     public MethodExceptionsDocStats getThrownExceptions() {
         return thrownExceptions;
     }
@@ -83,7 +98,7 @@ public class MethodDocStats extends MembersDocStats {
                 paramsStats.getDocumentedMembers() +
                 thrownExceptions.getDocumentedMembers();
 
-        //this 1 is used to count the method as a element which can be documented or not
+        //this 1 is used to count the method as a element which may be documented or not
         return Utils.computePercentage(documentedMembers, 1+ getMembersNumber());
     }
 

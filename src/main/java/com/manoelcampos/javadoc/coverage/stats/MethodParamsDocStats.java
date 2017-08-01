@@ -18,16 +18,21 @@ package com.manoelcampos.javadoc.coverage.stats;
 import com.sun.javadoc.ExecutableMemberDoc;
 
 /**
- * Computes statistics about the JavaDocs of parameters
- * from a specific method.
+ * Computes JavaDoc coverage statistics for parameters from a specific method.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
 public class MethodParamsDocStats extends MethodTagsDocStats {
 
-    MethodParamsDocStats(final ExecutableMemberDoc methodDoc) {
-        super(methodDoc);
+    /**
+     * Instantiates an object to compute JavaDoc coverage statistics for the params
+     * of a method/constructor.
+     *
+     * @param doc the element which enables reading the method's JavaDoc documentation
+     */
+    MethodParamsDocStats(final ExecutableMemberDoc doc) {
+        super(doc);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class MethodParamsDocStats extends MethodTagsDocStats {
 
     /**
      * A set of params doesn't have documentation,
-     * only individual params have.
+     * only each individual param may have.
      * @return
      */
     @Override
