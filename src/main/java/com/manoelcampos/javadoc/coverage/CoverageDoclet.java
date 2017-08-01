@@ -32,10 +32,15 @@ import java.util.Arrays;
  * It is the entry point for the JavaDoc Tool, which can be executed
  * either directly using the JavaDoc command line tool or from maven.
  *
+ * <p><b>References:</b>
+ * <ul>
+ *     <li><a href="http://docs.oracle.com/javase/8/docs/technotes/guides/javadoc/doclet/overview.html">Doclet Overview</a></li>
+ * </ul>
+ * </p>
+ *
  * @author Manoel Campos da Silva Filho
  * @see ConsoleExporter
  * @since 1.0.0
- * @see <a href="http://docs.oracle.com/javase/8/docs/technotes/guides/javadoc/doclet/overview.html">Doclet Overview</a>
  */
 public class CoverageDoclet {
     /**
@@ -51,6 +56,18 @@ public class CoverageDoclet {
      */
     private final DataExporter exporter;
     private final RootDoc rootDoc;
+
+    /**
+     * Starts the actual parsing or JavaDoc documentation and generation of the coverage report.
+     * This is the entry point for the JavaDoc tool to start the Doclet.
+     *
+     * @param rootDoc root element which enables reading JavaDoc documentation
+     * @return true if the Doclet was started successfully, false otherwise
+     * @see Doclet#start(RootDoc)
+     */
+    public static boolean start(final RootDoc rootDoc) {
+        return new CoverageDoclet(rootDoc).render();
+    }
 
     /**
      * Instantiate the Doclet which will parse the JavaDocs and generate the coverage report.
@@ -90,18 +107,6 @@ public class CoverageDoclet {
         }
 
         return false;
-    }
-
-    /**
-     * Starts the actual parsing or JavaDoc documentation and generation of the coverage report.
-     * This is the entry point for the JavaDoc tool to start the Doclet.
-     *
-     * @param rootDoc root element which enables reading JavaDoc documentation
-     * @return true if the Doclet was started successfully, false otherwise
-     * @see Doclet#start(RootDoc)
-     */
-    public static boolean start(final RootDoc rootDoc) {
-        return new CoverageDoclet(rootDoc).render();
     }
 
     /**
