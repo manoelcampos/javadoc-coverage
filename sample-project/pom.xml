@@ -11,6 +11,14 @@
     <name>SampleApp</name>
     <description>Just a sample application with silly javadoc comments to be parsed by the JavaDoc Coverage Plugin</description>
 
+    <properties>
+        <encoding>UTF-8</encoding>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+        <project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
+        <archetype.encoding>${encoding}</archetype.encoding>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -20,7 +28,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>            
             
@@ -28,9 +35,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.4</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
                 <executions>
                     <!-- Exports JavaDocs to regular HTML files -->
                     <execution>
@@ -53,7 +57,7 @@
                             <docletArtifact>
                                 <groupId>com.manoelcampos</groupId>
                                 <artifactId>javadoc-coverage</artifactId>
-                                <version>1.0.0</version>
+                                <version>1.1.0</version>
                             </docletArtifact>
                         </configuration>
                     </execution>

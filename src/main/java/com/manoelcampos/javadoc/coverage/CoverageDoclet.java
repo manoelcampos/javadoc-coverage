@@ -219,10 +219,6 @@ public class CoverageDoclet {
      */
     private String getOutputDir() {
         for (final String[] option : rootDoc.options()) {
-            System.out.println(Arrays.toString(option));
-        }
-
-        for (final String[] option : rootDoc.options()) {
             if (option.length == 2 && option[0].equals("-d")) {
                 return Utils.includeTrailingDirSeparator(option[1]);
             }
