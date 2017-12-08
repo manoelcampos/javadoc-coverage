@@ -9,8 +9,8 @@
     <packaging>jar</packaging>
     <version>1.1.0</version>
 
-    <name>JavaDoc Coverage Maven Plugin</name>
-    <description>Maven plugin to generate coverage reports of JavaDoc documentation.</description>
+    <name>JavaDoc Coverage Doclet</name>
+    <description>Doclet to generate coverage reports of JavaDoc documentation.</description>
     <url>http://manoelcampos.com</url>
 
     <inceptionYear>2017</inceptionYear>
@@ -280,7 +280,6 @@
                 -->
                 <!--<executions><execution><goals><goal>update</goal></goals></execution></executions>-->
             </plugin>
-
         </plugins>
     </build>
 </project>
