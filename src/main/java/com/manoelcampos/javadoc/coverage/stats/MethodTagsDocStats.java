@@ -20,6 +20,7 @@ import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Tag;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * An abstract class to compute JavaDoc statistics for a set of tags
@@ -56,11 +57,17 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
 
     @Override
     public long getDocumentedMembers() {
+        return getDocumentedTagStream().count();
+    }
+
+    /**
+     * Gets a Stream of all documented method Tags for the method.
+     * @return the documented Tag Stream
+     */
+    protected Stream<Tag> getDocumentedTagStream() {
         return Arrays.stream(getDoc().tags())
                 .filter(tag -> getTagName().equals(tag.name()))
-                .map(Tag::text)
-                .filter(Utils::isNotStringEmpty)
-                .count();
+                .filter(tag -> Utils.isNotStringEmpty(tag.text()));
     }
 
     /**

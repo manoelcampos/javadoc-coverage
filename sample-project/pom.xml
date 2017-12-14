@@ -6,7 +6,7 @@
     <groupId>com.manoelcampos</groupId>
     <artifactId>javadoc-coverage-sample</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
 
     <name>SampleApp</name>
     <description>Just a sample application with silly javadoc comments to be parsed by the JavaDoc Coverage Plugin</description>
@@ -24,7 +24,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.7.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -57,7 +57,7 @@
                             <docletArtifact>
                                 <groupId>com.manoelcampos</groupId>
                                 <artifactId>javadoc-coverage</artifactId>
-                                <version>1.1.0</version>
+                                <version>1.1.1</version>
                             </docletArtifact>
                         </configuration>
                     </execution>

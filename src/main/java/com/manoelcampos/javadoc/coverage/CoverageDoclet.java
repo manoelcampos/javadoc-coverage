@@ -25,7 +25,6 @@ import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
 
 import java.io.*;
-import java.util.Arrays;
 
 /**
  * A {@link Doclet} that computes coverage of JavaDoc documentation.
@@ -231,6 +230,4 @@ public class CoverageDoclet {
 
         return "";
     }
-
-
 }

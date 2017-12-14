@@ -7,7 +7,7 @@
     <groupId>com.manoelcampos</groupId>
     <artifactId>javadoc-coverage</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 
     <name>JavaDoc Coverage Doclet</name>
     <description>Doclet to generate coverage reports of JavaDoc documentation.</description>
@@ -181,7 +181,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.7.0</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
