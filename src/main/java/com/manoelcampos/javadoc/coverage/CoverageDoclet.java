@@ -75,11 +75,7 @@ public class CoverageDoclet {
      */
     public CoverageDoclet(final RootDoc rootDoc) {
         this.rootDoc = rootDoc;
-        try {
-            this.exporter = new HtmlExporter(this);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        this.exporter = new HtmlExporter(this);
     }
 
     /**

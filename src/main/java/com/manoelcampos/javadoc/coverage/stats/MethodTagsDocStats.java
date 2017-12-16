@@ -47,7 +47,7 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
     }
 
     /**
-     * The name of the tags associated to this object for which
+     * Gets the name of the tag associated to this object for which
      * JavaDoc coverage statistics will be computed, for instance,
      * "param" or "throws" tags.
      *

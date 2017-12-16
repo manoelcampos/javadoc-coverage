@@ -66,7 +66,7 @@ public abstract class AbstractDataExporter implements DataExporter {
      *
      * @param doclet the {@link CoverageDoclet} which computes teh JavaDoc coverage statistics.
      */
-    protected AbstractDataExporter(final CoverageDoclet doclet) throws FileNotFoundException {
+    protected AbstractDataExporter(final CoverageDoclet doclet) {
         this(doclet, "");
     }
 

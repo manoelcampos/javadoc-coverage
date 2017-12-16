@@ -22,7 +22,6 @@ import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
 import com.sun.javadoc.PackageDoc;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -34,7 +33,7 @@ import java.util.List;
 public class HtmlExporter extends AbstractDataExporter {
     public static final String COLUMNS = "<td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%.2f%%</td>\n";
 
-    public HtmlExporter(final CoverageDoclet doclet) throws FileNotFoundException {
+    public HtmlExporter(final CoverageDoclet doclet) {
         super(doclet, ".html");
     }
 

@@ -99,7 +99,7 @@ public class MethodDocStats extends MembersDocStats {
                 thrownExceptions.getDocumentedMembers();
 
         //this 1 is used to count the method as a element which may be documented or not
-        return Utils.computePercentage(documentedMembers, 1+ getMembersNumber());
+        return Utils.computePercentage(documentedMembers, 1 + getMembersNumber());
     }
 
     @Override

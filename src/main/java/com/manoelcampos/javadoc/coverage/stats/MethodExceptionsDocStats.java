@@ -75,6 +75,7 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
      * If a checked exception is documented but not declared, usually the IDEs report an issue
      * that the developer should fix.
      * </p>
+     *
      * @return
      */
     private long getDocumentedButNotDeclaredExceptionsNumber() {
@@ -104,6 +105,11 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
                 .count();
     }
 
+    /**
+     * Gets a Stream of thrown exceptions declared in the method's signature.
+     *
+     * @return
+     */
     private Stream<ClassDoc> getDeclaredExceptionsStream() {
         return Arrays.stream(getDoc().thrownExceptions());
     }
@@ -121,7 +127,7 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
         The exception class parsed by the Doclet always starts with the package name,
         even if the package is not included in the throws clause.
         On the other hand, the JavaDoc tag used by a developer to document the
-        exception usually ins't prefixed with its package.
+        exception usually isn't prefixed with its package.
         */
         return exception.toString().endsWith(getExceptionClassFromTag(tag));
     }

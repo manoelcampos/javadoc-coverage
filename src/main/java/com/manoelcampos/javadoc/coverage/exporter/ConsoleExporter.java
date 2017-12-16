@@ -20,7 +20,6 @@ import com.manoelcampos.javadoc.coverage.Utils;
 import com.manoelcampos.javadoc.coverage.stats.*;
 import com.sun.javadoc.PackageDoc;
 
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -32,7 +31,7 @@ import java.util.List;
  */
 public class ConsoleExporter extends AbstractDataExporter {
 
-    public ConsoleExporter(final CoverageDoclet doclet) throws FileNotFoundException {
+    public ConsoleExporter(final CoverageDoclet doclet) {
         super(doclet);
     }
 
@@ -54,7 +53,7 @@ public class ConsoleExporter extends AbstractDataExporter {
     protected void exportPackagesDocStats() {
         final PackagesDocStats packagesDocStats = getStats().getPackagesDocStats();
         exportPkgsOrClassesDocStats(packagesDocStats);
-        packagesDocStats.getPackagesDoc().forEach(pkg -> exportPackageDocStats(pkg));
+        packagesDocStats.getPackagesDoc().forEach(this::exportPackageDocStats);
         getWriter().println();
     }
 
