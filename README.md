@@ -21,7 +21,7 @@ The easier ways to use the plugin is through Maven or Gradle. You can use the pl
 
 ## Maven: Using the CoverageDoclet in a regular way
 
-To generate the regular JavaDoc HTML files and the coverage report, you have to include two configurations for the `maven-javadoc-plugin` inside your project's `pom.xml` file, as the exemple below:
+To generate the regular JavaDoc HTML files and the coverage report, you have to include two `<execution>` tags for the `maven-javadoc-plugin` inside your project's `pom.xml` file, as the exemple below:
 
 ```xml
 <build>
