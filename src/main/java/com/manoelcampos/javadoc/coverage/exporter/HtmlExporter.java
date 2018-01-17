@@ -50,12 +50,13 @@ public class HtmlExporter extends AbstractDataExporter {
         getWriter().println("    <meta charset='utf-8'>");
         getWriter().println("    <meta content='width=device-width,initial-scale=1' name=viewport>");
         getWriter().println("    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>\n");
-        getWriter().println("    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>\n");
+        //https://github.com/maslianok/stickyRows
+        getWriter().println("    <link rel='stylesheet' href='http://maslianok.github.io/stickyRows/css/stickyRows.css'>\n");
         getWriter().println("</head>");
         getWriter().println("<body>");
         getWriter().println("<div class='table-responsive'> ");
         getWriter().println("<h2>JavaDoc Coverage Report</h2>");
-        getWriter().println("<table class='table table-bordered'>");
+        getWriter().println("<table id='table1' class='table table-bordered table-with-sticky-rows'>");
         getWriter().println("<thead class='thead-inverse'>");
         getWriter().println("<tr>");
         getWriter().println("<th>Element Type</th><th>Name</th><th>Package</th><th>Documentable Members</th><th>Undocumented</th><th>Documented</th><th>Documented Percent</th>");
@@ -70,6 +71,12 @@ public class HtmlExporter extends AbstractDataExporter {
         getWriter().println("</table>");
         getWriter().println("</div>");
         getWriter().println("</body>");
+
+        getWriter().println("<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>\n");
+        getWriter().println("<script src='https://code.jquery.com/jquery-3.2.1.min.js' integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=' crossorigin='anonymous'></script>\n");
+        getWriter().println("<script src='http://maslianok.github.io/stickyRows/js/stickyRows.js'></script>\n");
+        getWriter().println("<script> $(document).ready(function(){ $('#table1').stickyRows(); }); </script>\n");
+        getWriter().println("</html>");
     }
 
     @Override
