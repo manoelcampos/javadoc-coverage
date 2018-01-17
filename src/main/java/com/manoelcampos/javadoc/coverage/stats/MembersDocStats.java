@@ -21,8 +21,8 @@ package com.manoelcampos.javadoc.coverage.stats;
  *
  * <p>In the case the owner of the members is:
  * <ul>
- *     <li><b>a class</b>, this object computes statistics for its fields, methods and so on.</li>
- *     <li><b>a method</b>, this object computes statistics for its parameters and thrown exceptions.</li>
+ *     <li><b>a class</b>, computes statistics for its fields, methods and so on.</li>
+ *     <li><b>a method</b>, computes statistics for its parameters and thrown exceptions.</li>
  * </ul>
  * </p>
  *

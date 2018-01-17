@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.stream.DoubleStream;
 
 /**
- * A class providing some utility methods.
+ * Provides some utility methods.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
@@ -76,7 +76,7 @@ public final class Utils {
     }
 
     /**
-     * Computes the mean value from a list of values.
+     * Computes the mean value from an array.
      *
      * @param values the values to compute the mean from
      * @return the computed mean
@@ -86,7 +86,7 @@ public final class Utils {
             return 0;
         }
 
-        return average(Arrays.stream(values));
+        return mean(Arrays.stream(values));
     }
 
     /**
@@ -95,7 +95,7 @@ public final class Utils {
      * @param stream the Stream of values to compute the mean from
      * @return the computed mean
      */
-    public static double average(final DoubleStream stream) {
+    private static double mean(final DoubleStream stream) {
         return stream.average().orElse(0);
     }
 

@@ -6,7 +6,7 @@
     <groupId>com.manoelcampos</groupId>
     <artifactId>javadoc-coverage-sample</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
 
     <name>SampleApp</name>
     <description>Just a sample application with silly javadoc comments to be parsed by the JavaDoc Coverage Plugin</description>
@@ -57,7 +57,7 @@
                             <docletArtifact>
                                 <groupId>com.manoelcampos</groupId>
                                 <artifactId>javadoc-coverage</artifactId>
-                                <version>1.1.1</version>
+                                <version>1.2.0</version>
                             </docletArtifact>
                         </configuration>
                     </execution>

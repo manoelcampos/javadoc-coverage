@@ -98,7 +98,7 @@ public class HtmlExporter extends AbstractDataExporter {
         for (MethodDocStats m : methods) {
             exportMembersDocStatsSummary(m, 4, m.getMethodName(), "");
             exportMembersDocStatsSummary(m.getParamsStats(), 5);
-            exportMembersDocStatsSummary(m.getThrownExceptions(), 5);
+            exportMembersDocStatsSummary(m.getThrownExceptionsStats(), 5);
         }
     }
 

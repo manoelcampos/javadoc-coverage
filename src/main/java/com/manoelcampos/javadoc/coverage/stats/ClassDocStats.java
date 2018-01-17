@@ -30,6 +30,14 @@ import java.util.List;
  * @since 1.0.0
  */
 public class ClassDocStats extends MembersDocStats {
+    /**
+     * This value is added to the number of elements in order to count the class itself as an element
+     * which can be documented.
+     *
+     * @see #getMembersNumber()
+     */
+    private static final int CLASS_DOC = 1;
+
     private final ClassDoc doc;
     private final ClassMembersDocStats fieldsStats;
     private final ClassMembersDocStats enumsStats;
@@ -82,12 +90,11 @@ public class ClassDocStats extends MembersDocStats {
 
     @Override
     public long getMembersNumber() {
-        //Adds 1 to count class documentation as an element
-        return 1 +
+        return CLASS_DOC +
                fieldsStats.getMembersNumber() +
                enumsStats.getMembersNumber() +
-               getMethoddMembers(methodsStats) +
-               getMethoddMembers(constructorsStats) +
+                getMethodMembers(methodsStats) +
+                getMethodMembers(constructorsStats) +
                annotationsStats.getMembersNumber();
     }
 
@@ -96,9 +103,15 @@ public class ClassDocStats extends MembersDocStats {
                methodOrConstructor.stream().mapToLong(MethodDocStats::getDocumentedMembers).sum();
     }
 
-    private long getMethoddMembers(final List<MethodDocStats> methodOrConstructor) {
-        return methodOrConstructor.size() +
-                methodOrConstructor.stream().mapToLong(MethodDocStats::getMembersNumber).sum();
+    /**
+     * Gets the amount of documentable members from a given list of methods/constructors.
+     *
+     * @param methodOrConstructor a list containing the methods and constructors to get their number of members
+     * @return the total number of members for the given list of methods/constructors
+     * @see MethodDocStats#getMembersNumber()
+     */
+    private long getMethodMembers(final List<MethodDocStats> methodOrConstructor) {
+        return methodOrConstructor.stream().mapToLong(MethodDocStats::getMembersNumber).sum();
     }
 
     public String getName() {

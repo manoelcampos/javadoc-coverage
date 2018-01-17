@@ -17,21 +17,31 @@ package com.manoelcampos.javadoc.coverage.stats;
 
 import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Tag;
 
 import java.util.Arrays;
 
 /**
  * Computes JavaDoc coverage statistics for a method/constructor
- * and its members, such as: parameters and thrown exceptions.
+ * and its members, namely parameters and thrown exceptions.
  *
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
 public class MethodDocStats extends MembersDocStats {
+    /**
+     * This value is added to the number of elements in order to count the method itself as an element
+     * which can be documented.
+     *
+     * @see #getMembersNumber()
+     * @see #getDocumentedMembersPercent()
+     */
+    private static final int METHOD_DOC = 1;
+
     private final ExecutableMemberDoc doc;
     private final MethodParamsDocStats paramsStats;
-    private final MethodExceptionsDocStats thrownExceptions;
+    private final MethodExceptionsDocStats thrownExceptionsStats;
 
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for a method/constructor.
@@ -41,22 +51,8 @@ public class MethodDocStats extends MembersDocStats {
     MethodDocStats(final ExecutableMemberDoc doc) {
         this.doc = doc;
         this.paramsStats = new MethodParamsDocStats(doc);
-        this.thrownExceptions = new MethodExceptionsDocStats(doc);
+        this.thrownExceptionsStats = new MethodExceptionsDocStats(doc);
         this.enablePrintIfNoMembers();
-    }
-
-    /**
-     * Checks if the return value of the method/constructor is documented or not.
-     *
-     * @return true if the return value is documented, false otherwise.
-     */
-    public boolean isReturnValueDocumented() {
-         /* @todo If the return is void or is a constructor, it don't have to be documented.
-         This way, the method should return true.*/
-        return Arrays.stream(doc.tags())
-                .filter(tag -> "@return".equals(tag.name()))
-                .map(Tag::text)
-                .anyMatch(Utils::isNotStringEmpty);
     }
 
     public String getMethodName() {
@@ -82,29 +78,46 @@ public class MethodDocStats extends MembersDocStats {
      *
      * @return
      */
-    public MethodExceptionsDocStats getThrownExceptions() {
-        return thrownExceptions;
+    public MethodExceptionsDocStats getThrownExceptionsStats() {
+        return thrownExceptionsStats;
     }
 
     @Override
     public long getDocumentedMembers() {
-        return 0;
+        final int returnCount = (!isVoidMethodOrConstructor() && isReturnDocumented()) ? 1 : 0;
+        return Utils.boolToInt(hasDocumentation()) +
+                paramsStats.getDocumentedMembers() +
+                thrownExceptionsStats.getDocumentedMembers() +
+                returnCount;
+    }
+
+    private boolean isReturnDocumented() {
+        return Arrays.stream(doc.tags()).filter(t -> t.name().equals("@return")).map(Tag::text).anyMatch(Utils::isNotStringEmpty);
     }
 
     @Override
     public double getDocumentedMembersPercent() {
-        final double documentedMembers =
-                Utils.boolToInt(hasDocumentation()) +
-                paramsStats.getDocumentedMembers() +
-                thrownExceptions.getDocumentedMembers();
+        return Utils.computePercentage(getDocumentedMembers(), getMembersNumber());
+    }
 
-        //this 1 is used to count the method as a element which may be documented or not
-        return Utils.computePercentage(documentedMembers, 1 + getMembersNumber());
+    /**
+     * Checks if the method is void or is a constructor.
+     * Either ways, it doesn't have a return value to be documented.
+     *
+     * @return true if the method is void or is a constructor, false otherwise
+     */
+    private boolean isVoidMethodOrConstructor() {
+        return isVoidMethod() || doc.isConstructor();
+    }
+
+    private boolean isVoidMethod() {
+        return doc.isMethod() && ((MethodDoc) doc).returnType() == null;
     }
 
     @Override
     public long getMembersNumber() {
-        return paramsStats.getMembersNumber() + thrownExceptions.getMembersNumber();
+        final int returnCount = isVoidMethodOrConstructor() ? 0 : 1;
+        return METHOD_DOC + paramsStats.getMembersNumber() + thrownExceptionsStats.getMembersNumber() + returnCount;
     }
 
     @Override

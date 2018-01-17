@@ -108,8 +108,8 @@ public class ConsoleExporter extends AbstractDataExporter {
                     methodStats.hasDocumentation(), methodStats.getDocumentedMembersPercent());
             exportMembersDocStats(writer, methodStats.getParamsStats(), memberTypeFormat);
 
-            if(methodStats.getThrownExceptions().getMembersNumber() > 0) {
-                exportMembersDocStats(writer, methodStats.getThrownExceptions(), memberTypeFormat);
+            if (methodStats.getThrownExceptionsStats().getMembersNumber() > 0) {
+                exportMembersDocStats(writer, methodStats.getThrownExceptionsStats(), memberTypeFormat);
             }
         }
     }

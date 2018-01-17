@@ -60,7 +60,11 @@ public class ClassMembersDocStats extends MembersDocStats {
      */
     @Override
     public long getMembersNumber() {
-        // @todo the method is not working as expected. It always returns the length of the array.
+        /*
+         * @todo the method is not working as expected. It always returns the length of the array.
+         * The side-effect is that default no-args constructors (which aren't directly declared into
+         * a class source code) will be computed as undocumented.
+         */
         return Arrays.stream(membersDocs)
                 .map(Doc::position)
                 .filter(Objects::nonNull)

@@ -52,10 +52,10 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
      * coverage statistics is being computed.
      *
      * <p>
-     * There may be documented exceptions which are not declared.
+     * There may be documented exceptions which aren't declared.
      * Usually, undeclared exceptions are unchecked exceptions,
      * which aren't required to be declared.
-     * Due to such conditions, the number of existing exceptions will be those:
+     * Due to such conditions, the number of existing exceptions will be those: <br>
      * <b>declared but not documented</b> + <b>documented but not declared</b> + <b>documented and declared</b>.
      * </p>
      * @return the total number of exceptions

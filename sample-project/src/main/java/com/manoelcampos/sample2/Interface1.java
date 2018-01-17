@@ -48,6 +48,7 @@ public interface Interface1 {
 
     /**
      * Computes some equation.
+     * @param input1 the first input
      * @throws IllegalArgumentException when the input1 is negative
      * @throws IndexOutOfBoundsException when there are not historic values
      */
