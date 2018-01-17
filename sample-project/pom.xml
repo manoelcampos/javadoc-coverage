@@ -59,6 +59,7 @@
                                 <artifactId>javadoc-coverage</artifactId>
                                 <version>1.2.0</version>
                             </docletArtifact>
+                            <failOnError>false</failOnError>
                         </configuration>
                     </execution>
                 </executions>
