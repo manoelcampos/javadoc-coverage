@@ -36,7 +36,7 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
      * Instantiates an object to compute JavaDoc coverage statistics for the exceptions thrown
      * by a method/constructor.
      *
-     * @param doc the element which enables reading the method's JavaDoc documentation
+     * @param doc an object which enables reading the JavaDoc documentation for the method the exceptions belong to
      */
     MethodExceptionsDocStats(final ExecutableMemberDoc doc) {
         super(doc);

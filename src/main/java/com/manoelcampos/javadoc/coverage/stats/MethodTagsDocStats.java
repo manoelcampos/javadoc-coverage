@@ -33,13 +33,16 @@ import java.util.stream.Stream;
  * @since 1.0.0
  */
 public abstract class MethodTagsDocStats extends MembersDocStats {
+    /**
+     * JavaDoc documentation for the method the tags belong to.
+     */
     private final ExecutableMemberDoc doc;
 
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for the tags
      * of a method/constructor.
      *
-     * @param doc the element which enables reading the method's JavaDoc documentation
+     * @param doc an object which enables reading the JavaDoc documentation for the method the tags belong to
      */
     MethodTagsDocStats(final ExecutableMemberDoc doc) {
         super();
@@ -75,12 +78,18 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
      *
      * @return the method's JavaDoc documentation element
      */
-    ExecutableMemberDoc getDoc() {
+    protected ExecutableMemberDoc getDoc() {
         return doc;
     }
 
+    /**
+     * A set of tags doesn't have documentation.
+     * Only each individual tag may have.
+     *
+     * @return
+     */
     @Override
-    public boolean hasDocumentation() {
-        return Utils.isNotStringEmpty(doc.getRawCommentText());
+    public boolean isDocumented() {
+        return false;
     }
 }

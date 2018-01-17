@@ -74,7 +74,7 @@ public class ClassesDocStats extends MembersDocStats {
      * @return
      */
     @Override
-    public boolean hasDocumentation() {
+    public boolean isDocumented() {
         return false;
     }
 }

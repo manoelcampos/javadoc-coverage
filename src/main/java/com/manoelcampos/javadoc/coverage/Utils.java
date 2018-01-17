@@ -17,6 +17,8 @@ package com.manoelcampos.javadoc.coverage;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.DoubleStream;
 
 /**
@@ -30,6 +32,26 @@ public final class Utils {
      * A private constructor to avoid class instantiation.
      */
     private Utils() {}
+
+    /**
+     * Checks if a element (class, interface, method, etc) is in fact documented or not.
+     * Sometimes, there is a javadoc, but the description of the member is empty.
+     * The javadoc may just contain tags documenting the elements belonging to this member
+     * (such as method parameters).
+     *
+     * @param javadoc the complete JavaDoc for an element.
+     * @return
+     */
+    public static boolean isElementDocumented(final String javadoc) {
+        /*
+         * Try to get the text before the first @. This text represents
+         * the documentation for the element (such as a method).
+         * The first @ represents the beginning of the first tag (such as a @param tag).
+         */
+        final Matcher matcher = Pattern.compile("^([^@]+)").matcher(javadoc);
+        return matcher.find() && isNotStringEmpty(matcher.group(0));
+
+    }
 
     public static boolean isNotStringEmpty(final String str) {
         return !isStringEmpty(str);

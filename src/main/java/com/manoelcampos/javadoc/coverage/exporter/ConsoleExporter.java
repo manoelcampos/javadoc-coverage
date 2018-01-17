@@ -91,7 +91,7 @@ public class ConsoleExporter extends AbstractDataExporter {
     private void exportClassDocStats(final ClassDocStats classStats) {
         getWriter().printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n",
                 classStats.getType(), classStats.getName(), classStats.getPackageName(),
-                classStats.hasDocumentation(), classStats.getDocumentedMembersPercent());
+                classStats.isDocumented(), classStats.getDocumentedMembersPercent());
 
         exportMembersDocStats(getWriter(), classStats.getFieldsStats());
         exportMethodsDocStats(getWriter(), classStats.getConstructorsStats());
@@ -105,7 +105,7 @@ public class ConsoleExporter extends AbstractDataExporter {
         for (final MethodDocStats methodStats : methodStatsList) {
             writer.printf("\t\t%s: %s Documented: %s (%.2f%%)\n",
                     methodStats.getType(), methodStats.getMethodName(),
-                    methodStats.hasDocumentation(), methodStats.getDocumentedMembersPercent());
+                    methodStats.isDocumented(), methodStats.getDocumentedMembersPercent());
             exportMembersDocStats(writer, methodStats.getParamsStats(), memberTypeFormat);
 
             if (methodStats.getThrownExceptionsStats().getMembersNumber() > 0) {

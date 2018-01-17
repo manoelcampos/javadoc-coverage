@@ -80,7 +80,7 @@ public class ClassDocStats extends MembersDocStats {
     @Override
     public long getDocumentedMembers() {
         return
-                Utils.boolToInt(hasDocumentation()) +
+                Utils.boolToInt(isDocumented()) +
                 fieldsStats.getDocumentedMembers() +
                 enumsStats.getDocumentedMembers() +
                 getDocumentedMethodMembers(methodsStats) +
@@ -99,7 +99,7 @@ public class ClassDocStats extends MembersDocStats {
     }
 
     private long getDocumentedMethodMembers(final List<MethodDocStats> methodOrConstructor) {
-        return methodOrConstructor.stream().filter(MethodDocStats::hasDocumentation).count() +
+        return methodOrConstructor.stream().filter(MethodDocStats::isDocumented).count() +
                methodOrConstructor.stream().mapToLong(MethodDocStats::getDocumentedMembers).sum();
     }
 
@@ -127,11 +127,6 @@ public class ClassDocStats extends MembersDocStats {
         return doc.isInterface() ? "Interface" : doc.isEnum() ? "Enum" : "Class";
     }
 
-    @Override
-    public boolean hasDocumentation() {
-        return Utils.isNotStringEmpty(doc.getRawCommentText());
-    }
-
     public ClassMembersDocStats getFieldsStats() {
         return fieldsStats;
     }
@@ -154,5 +149,10 @@ public class ClassDocStats extends MembersDocStats {
 
     public ClassDoc getDoc() {
         return doc;
+    }
+
+    @Override
+    public boolean isDocumented() {
+        return Utils.isElementDocumented(doc.getRawCommentText());
     }
 }

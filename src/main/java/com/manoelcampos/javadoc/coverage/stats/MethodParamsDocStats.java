@@ -29,7 +29,7 @@ public class MethodParamsDocStats extends MethodTagsDocStats {
      * Instantiates an object to compute JavaDoc coverage statistics for the params
      * of a method/constructor.
      *
-     * @param doc the element which enables reading the method's JavaDoc documentation
+     * @param doc an object which enables reading the JavaDoc documentation for the method the params belong to
      */
     MethodParamsDocStats(final ExecutableMemberDoc doc) {
         super(doc);
@@ -48,15 +48,5 @@ public class MethodParamsDocStats extends MethodTagsDocStats {
     @Override
     public String getType() {
         return "Params";
-    }
-
-    /**
-     * A set of params doesn't have documentation,
-     * only each individual param may have.
-     * @return
-     */
-    @Override
-    public boolean hasDocumentation() {
-        return false;
     }
 }

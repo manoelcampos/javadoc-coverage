@@ -85,14 +85,28 @@ public class MethodDocStats extends MembersDocStats {
     @Override
     public long getDocumentedMembers() {
         final int returnCount = (!isVoidMethodOrConstructor() && isReturnDocumented()) ? 1 : 0;
-        return Utils.boolToInt(hasDocumentation()) +
+        final long documentedMembers = Utils.boolToInt(isDocumented()) +
                 paramsStats.getDocumentedMembers() +
                 thrownExceptionsStats.getDocumentedMembers() +
                 returnCount;
+
+        /* If an overridden method isn't documented at all, it doesn't matter because
+         * its documentation is optional. The superclass is accountable to document
+         * the method. This way, the method is counted as completely documented.
+         */
+        if (isOverridden() && documentedMembers == 0) {
+            return getMembersNumber();
+        }
+
+        return documentedMembers;
     }
 
     private boolean isReturnDocumented() {
         return Arrays.stream(doc.tags()).filter(t -> t.name().equals("@return")).map(Tag::text).anyMatch(Utils::isNotStringEmpty);
+    }
+
+    private boolean isOverridden() {
+        return doc.isMethod() && ((MethodDoc) doc).overriddenMethod() != null;
     }
 
     @Override
@@ -117,11 +131,15 @@ public class MethodDocStats extends MembersDocStats {
     @Override
     public long getMembersNumber() {
         final int returnCount = isVoidMethodOrConstructor() ? 0 : 1;
-        return METHOD_DOC + paramsStats.getMembersNumber() + thrownExceptionsStats.getMembersNumber() + returnCount;
+
+        return METHOD_DOC +
+                paramsStats.getMembersNumber() +
+                thrownExceptionsStats.getMembersNumber() +
+                returnCount;
     }
 
     @Override
-    public boolean hasDocumentation() {
-        return Utils.isNotStringEmpty(doc.getRawCommentText());
+    public boolean isDocumented() {
+        return Utils.isElementDocumented(doc.getRawCommentText());
     }
 }

@@ -60,7 +60,19 @@ public class Class1 {
         this.field1 = field1;
     }
 
+    /**
+     * Gets value of field 2.
+     * @return the value of field 2
+     */
     public int getField2(){
+        return 0;
+    }
+
+    /**
+     * Gets value of field 3.
+     * @return the value of field 3
+     */
+    public int getField3(){
         return 0;
     }
 

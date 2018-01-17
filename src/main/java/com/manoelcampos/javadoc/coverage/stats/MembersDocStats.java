@@ -37,7 +37,7 @@ public abstract class MembersDocStats implements DocStats {
      *
      * @return true if the owner has documentation, false otherwise
      */
-    public abstract boolean hasDocumentation();
+    public abstract boolean isDocumented();
 
     /**
      * Checks if JavaDoc coverage statistics should be printed if the owner has no member.
