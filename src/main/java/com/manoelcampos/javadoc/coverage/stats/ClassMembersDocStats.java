@@ -15,11 +15,14 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.Doc;
-
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Predicate;
+
+import com.manoelcampos.javadoc.coverage.Utils;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.ProgramElementDoc;
 
 /**
  * Computes JavaDoc coverage statistics for specific type of members belonging to an owner.
@@ -35,17 +38,22 @@ public class ClassMembersDocStats extends MembersDocStats {
      */
     private final Doc[] membersDocs;
     private final String membersType;
+    private final boolean computeOnlyForPublic;
 
     /**
-     * Instantiates an object to compute JavaDoc coverage statistics
-     * for the members of a class, interface or enum.
+     * Instantiates an object to compute JavaDoc coverage statistics for the members of a class, interface or enum.
      *
-     * @param membersDocs the JavaDoc documentation for the members of the owner.
-     * @param membersType the type of the members of the owner to compute JavaDoc coverage statistics.
+     * @param membersDocs
+     *            the JavaDoc documentation for the members of the owner.
+     * @param membersType
+     *            the type of the members of the owner to compute JavaDoc coverage statistics.
+     * @param computeOnlyForPublic
+     *            indicates that coverage should only be compute for the public part of the javadoc
      */
-    ClassMembersDocStats(final Doc[] membersDocs, final String membersType) {
+    ClassMembersDocStats(final Doc[] membersDocs, final String membersType, boolean computeOnlyForPublic) {
         this.membersDocs = membersDocs;
         this.membersType = membersType;
+        this.computeOnlyForPublic = computeOnlyForPublic;
     }
 
     /**
@@ -66,6 +74,7 @@ public class ClassMembersDocStats extends MembersDocStats {
          * a class source code) will be computed as undocumented.
          */
         return Arrays.stream(membersDocs)
+                .filter(filterPublicIfNecessary())
                 .map(Doc::position)
                 .filter(Objects::nonNull)
                 .count();
@@ -73,7 +82,23 @@ public class ClassMembersDocStats extends MembersDocStats {
 
     @Override
     public long getDocumentedMembers() {
-        return Arrays.stream(membersDocs).map(Doc::getRawCommentText).filter(Utils::isNotStringEmpty).count();
+        return Arrays.stream(membersDocs).filter(filterPublicIfNecessary()).map(Doc::getRawCommentText).filter(Utils::isNotStringEmpty)
+                .count();
+    }
+
+    private Predicate<? super Doc> filterPublicIfNecessary() {
+        return m -> {
+            if (computeOnlyForPublic) {
+                if (m instanceof ClassDoc) {
+                    return !computeOnlyForPublic || ((ClassDoc) m).isPublic();
+                } else if (m instanceof ProgramElementDoc) {
+                    return !computeOnlyForPublic || ((ProgramElementDoc) m).isPublic();
+                } else {
+                    throw new UnsupportedOperationException("unimplemented for type " + m.getClass());
+                }
+            }
+            return true;
+        };
     }
 
     @Override

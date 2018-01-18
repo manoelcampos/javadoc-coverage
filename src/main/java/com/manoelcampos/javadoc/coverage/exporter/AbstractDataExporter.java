@@ -15,13 +15,13 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
-import com.manoelcampos.javadoc.coverage.CoverageDoclet;
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.stats.JavaDocsStats;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+
+import com.manoelcampos.javadoc.coverage.CoverageDoclet;
+import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.stats.JavaDocsStats;
 
 /**
  * Abstract class to implement JavaDoc Coverage reports in different formats.
@@ -58,7 +58,7 @@ public abstract class AbstractDataExporter implements DataExporter {
             }
         }
 
-        this.stats = new JavaDocsStats(doclet.getRootDoc());
+        this.stats = new JavaDocsStats(doclet.getRootDoc(), doclet.computeOnlyForPublicModifier());
     }
 
     /**
@@ -85,8 +85,8 @@ public abstract class AbstractDataExporter implements DataExporter {
      * @see CoverageDoclet#OUTPUT_NAME_OPTION
      */
     private String getFileNameFromCommandLine() {
-        final String[] outputNameOption = doclet.getOptionValues(CoverageDoclet.OUTPUT_NAME_OPTION);
-        return outputNameOption.length > 1 ? outputNameOption[1] : DEFAULT_OUTPUT_NAME;
+        final String outputNameOption = doclet.getOptionValue(CoverageDoclet.OUTPUT_NAME_OPTION);
+        return outputNameOption != null ? outputNameOption : DEFAULT_OUTPUT_NAME;
     }
 
     /**

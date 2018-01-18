@@ -15,12 +15,16 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.manoelcampos.javadoc.coverage.Utils;
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.AnnotationTypeElementDoc;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ConstructorDoc;
+import com.sun.javadoc.MethodDoc;
 
 /**
  * Computes statistics about the JavaDocs of a class, inner class, interface or enum
@@ -46,34 +50,40 @@ public class ClassDocStats extends MembersDocStats {
     private List<MethodDocStats> methodsStats;
     private List<MethodDocStats> constructorsStats;
 
-    public ClassDocStats(final ClassDoc doc) {
+    public ClassDocStats(final ClassDoc doc, boolean computeOnlyForPublic) {
         this.doc = doc;
-        fieldsStats = new ClassMembersDocStats(doc.fields(false), "Fields");
-        enumsStats = new ClassMembersDocStats(doc.enumConstants(), "Enum Consts");
-        processMethodsDocsStats(doc);
-        processConstructorsDocsStats(doc);
-        processAnnotationsDocsStats(doc);
+        fieldsStats = new ClassMembersDocStats(doc.fields(false), "Fields", computeOnlyForPublic);
+        enumsStats = new ClassMembersDocStats(doc.enumConstants(), "Enum Consts", computeOnlyForPublic);
+        processMethodsDocsStats(doc, computeOnlyForPublic);
+        processConstructorsDocsStats(doc, computeOnlyForPublic);
+        processAnnotationsDocsStats(doc, computeOnlyForPublic);
     }
 
-    private void processAnnotationsDocsStats(ClassDoc doc) {
+    private void processAnnotationsDocsStats(ClassDoc doc, boolean computeOnlyForPublic) {
         if (doc instanceof AnnotationTypeDoc) {
-            annotationsStats = new ClassMembersDocStats(((AnnotationTypeDoc) doc).elements(), "Annotations");
-        } else annotationsStats = new ClassMembersDocStats(new AnnotationTypeElementDoc[0], "Annotations");
-    }
-
-    private void processConstructorsDocsStats(ClassDoc doc) {
-        final ConstructorDoc[] constructors = doc.constructors(false);
-        constructorsStats = new ArrayList<>(constructors.length);
-        for (final ConstructorDoc constructor : constructors) {
-            constructorsStats.add(new MethodDocStats(constructor));
+            annotationsStats = new ClassMembersDocStats(((AnnotationTypeDoc) doc).elements(), "Annotations", computeOnlyForPublic);
+        } else {
+            annotationsStats = new ClassMembersDocStats(new AnnotationTypeElementDoc[0], "Annotations", computeOnlyForPublic);
         }
     }
 
-    private void processMethodsDocsStats(ClassDoc doc) {
+    private void processConstructorsDocsStats(ClassDoc doc, boolean computeOnlyForPublic) {
+        final ConstructorDoc[] constructors = doc.constructors(false);
+        constructorsStats = new ArrayList<>();
+        for (final ConstructorDoc constructor : constructors) {
+            if (!computeOnlyForPublic || constructor.isPublic()) {
+                constructorsStats.add(new MethodDocStats(constructor));
+            }
+        }
+    }
+
+    private void processMethodsDocsStats(ClassDoc doc, boolean computeOnlyForPublic) {
         final MethodDoc[] methods = doc.methods(false);
-        methodsStats = new ArrayList<>(methods.length);
+        methodsStats = new ArrayList<>();
         for (final MethodDoc method : methods) {
-            methodsStats.add(new MethodDocStats(method));
+            if (!computeOnlyForPublic || method.isPublic()) {
+                methodsStats.add(new MethodDocStats(method));
+            }
         }
     }
 

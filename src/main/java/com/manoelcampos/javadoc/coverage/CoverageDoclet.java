@@ -15,6 +15,12 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
 import com.manoelcampos.javadoc.coverage.exporter.ConsoleExporter;
 import com.manoelcampos.javadoc.coverage.exporter.DataExporter;
 import com.manoelcampos.javadoc.coverage.exporter.HtmlExporter;
@@ -23,8 +29,6 @@ import com.sun.javadoc.Doclet;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.standard.Standard;
-
-import java.io.*;
 
 /**
  * A {@link Doclet} that computes coverage of JavaDoc documentation.
@@ -50,11 +54,19 @@ public class CoverageDoclet {
     public static final String OUTPUT_NAME_OPTION[] = {"-outputName", "-o"};
 
     /**
+     * A command line parameter to enable coverage reports only for certain visibility modifiers. The first value is the long version of the
+     * parameter name and the second is the short one. Values for this option are public (only public stuff is used) and private (everything
+     * is used)
+     */
+    public static final String COVERAGE_ONLY_FOR_PUBLIC_OPTION[] = { "-modifiers", "-m" };
+
+    /**
      * The {@link DataExporter} object to export the coverage report to a file
      * in a specific format.
      */
     private final DataExporter exporter;
     private final RootDoc rootDoc;
+    private final boolean computeOnlyForPublicModifier;
 
     /**
      * Starts the actual parsing or JavaDoc documentation and generation of the coverage report.
@@ -75,7 +87,14 @@ public class CoverageDoclet {
      */
     public CoverageDoclet(final RootDoc rootDoc) {
         this.rootDoc = rootDoc;
+        computeOnlyForPublicModifier = "public".equals(getOptionValue(COVERAGE_ONLY_FOR_PUBLIC_OPTION));
+
+        // this needs to be the last part as it already accesses some stuff from the doclet
         this.exporter = new HtmlExporter(this);
+    }
+
+    public final boolean computeOnlyForPublicModifier() {
+        return computeOnlyForPublicModifier;
     }
 
     /**
@@ -84,7 +103,7 @@ public class CoverageDoclet {
      * @return true if it's a valid custom parameter, false otherwise
      */
     private static boolean isCustomParameter(final String paramName) {
-        return isParameter(paramName, OUTPUT_NAME_OPTION);
+        return isParameter(paramName, OUTPUT_NAME_OPTION) || isParameter(paramName, COVERAGE_ONLY_FOR_PUBLIC_OPTION);
     }
 
     /**
@@ -131,7 +150,7 @@ public class CoverageDoclet {
      */
     public static int optionLength(final String option) {
         /*The custom outputName parameter accepts one argument.
-        * The name of the param counts as the one argument.*/
+         * The name of the param counts as the one argument.*/
         if (isCustomParameter(option)) {
             return 2;
         }
@@ -148,14 +167,14 @@ public class CoverageDoclet {
      * @return the values associated to the option, where the 0th element is the option itself;
      * or an empty array if the option is invalid.
      */
-    public String[] getOptionValues(final String[] optionNames) {
+    public String getOptionValue(final String[] optionNames) {
         for (final String[] optionValues : rootDoc.options()) {
             if (isParameter(optionValues[0], optionNames)) {
-                return optionValues;
+                return optionValues[1];
             }
         }
 
-        return new String[]{};
+        return null;
     }
 
     /**

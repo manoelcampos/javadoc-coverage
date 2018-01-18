@@ -15,14 +15,14 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
+import java.util.List;
+
 import com.manoelcampos.javadoc.coverage.CoverageDoclet;
 import com.manoelcampos.javadoc.coverage.Utils;
 import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
 import com.sun.javadoc.PackageDoc;
-
-import java.util.List;
 
 /**
  * Exports the JavaDoc coverage report to an HTML file.

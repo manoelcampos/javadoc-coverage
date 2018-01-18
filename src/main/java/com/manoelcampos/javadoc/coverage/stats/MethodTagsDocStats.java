@@ -68,8 +68,7 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
      * @return the documented Tag Stream
      */
     protected Stream<Tag> getDocumentedTagStream() {
-        return Arrays.stream(getDoc().tags())
-                .filter(tag -> getTagName().equals(tag.name()))
+        return Arrays.stream(getDoc().tags()).filter(tag -> getTagName().equals(tag.name()))
                 .filter(tag -> Utils.isNotStringEmpty(tag.text()));
     }
 
