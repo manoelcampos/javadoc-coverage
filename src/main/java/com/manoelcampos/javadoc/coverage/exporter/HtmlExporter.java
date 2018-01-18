@@ -20,6 +20,7 @@ import java.util.List;
 import com.manoelcampos.javadoc.coverage.CoverageDoclet;
 import com.manoelcampos.javadoc.coverage.Utils;
 import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
+import com.manoelcampos.javadoc.coverage.stats.JavaDocsStats;
 import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
 import com.manoelcampos.javadoc.coverage.stats.PackagesDocStats;
@@ -39,7 +40,10 @@ public class HtmlExporter extends AbstractDataExporter {
 
     @Override
     protected void exportProjectDocumentationCoverageSummary() {
-        getWriter().printf("<tr>" + COLUMNS + "</tr>", "<strong>Project Documentation Coverage</strong>", "", "", "", "", "", getStats().getDocumentedMembersPercent());
+        JavaDocsStats stats = getStats();
+        getWriter().printf("<tr>" + COLUMNS + "</tr>", "<strong>Project Documentation Coverage</strong>", "", "",
+                stats.getNumberOfDocumentableMembers(), stats.getUndocumentedMembersOfElement(),
+                stats.getNumberOfDocumentedMembers(), stats.getDocumentedMembersPercent());
     }
 
     @Override

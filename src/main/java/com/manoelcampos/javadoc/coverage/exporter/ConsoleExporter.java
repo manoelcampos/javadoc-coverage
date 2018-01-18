@@ -23,7 +23,7 @@ import com.manoelcampos.javadoc.coverage.Utils;
 import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
-import com.sun.javadoc.PackageDoc;
+import com.manoelcampos.javadoc.coverage.stats.PackagesDocStats;
 
 /**
  * Prints the JavaDoc coverage report to the console (standard output).
@@ -53,36 +53,23 @@ public class ConsoleExporter extends AbstractDataExporter {
 
     @Override
     protected void exportPackagesDocStats() {
-        // final PackagesDocStats packagesDocStats = getStats().getPackagesDocStats();
-        // exportPkgsOrClassesDocStats(packagesDocStats);
-        // packagesDocStats.getPackagesDoc().forEach(this::exportPackageDocStats);
-        // getWriter().println();
+        for (PackagesDocStats packageDoc : getStats().getPackagesDocStats()) {
+            getWriter().printf("%-26s: \t%11d Undocumented: %6d Documented: %6d (%.2f%%)\n",
+                    packageDoc.getType() + " " + packageDoc.getName(),
+                    packageDoc.getNumberOfDocumentableMembers(), packageDoc.getUndocumentedMembersOfElement(),
+                    packageDoc.getNumberOfDocumentedMembers(), packageDoc.getDocumentedMembersPercent());
+            exportClassesDocStats(packageDoc);
+        }
+        getWriter().println();
     }
 
-    private void exportPkgsOrClassesDocStats(MembersDocStats packagesDocStats) {
-        getWriter().printf("%-26s: \t%11d Undocumented: %6d Documented: %6d (%.2f%%)\n",
-                packagesDocStats.getType(), packagesDocStats.getNumberOfDocumentableMembers(),
-                packagesDocStats.getUndocumentedMembersOfElement(), packagesDocStats.getNumberOfDocumentedMembers(),
-                packagesDocStats.getDocumentedMembersPercent());
-    }
-
-    /**
-     * Exports the statistics about JavaDoc coverage of a given package.
-     *  @param doc the object containing the JavaDoc coverage data
-     *
-     */
-    private void exportPackageDocStats(final PackageDoc doc) {
-        getWriter().printf("\tPackage %s. Documented: %s\n", doc.name(), Utils.isNotStringEmpty(doc.commentText()));
-    }
-
-    protected void exportClassesDocStats() {
-        // final ClassesDocStats classesDocStats = getStats().getClassesDocStats();
-        // exportPkgsOrClassesDocStats(classesDocStats);
-        //
-        // for (final ClassDocStats classStats : getStats().getClassesDocStats().getClassesList()) {
-        // exportClassDocStats(classStats);
-        // }
-        // getWriter().println();
+    private void exportClassesDocStats(PackagesDocStats packageWithClasses) {
+        for (final ClassDocStats classStats : packageWithClasses.getClassDocs()) {
+            getWriter().printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n", classStats.getType(), classStats.getName(),
+                    packageWithClasses.getName(), classStats.isDocumented(), classStats.getDocumentedMembersPercent());
+            exportClassDocStats(classStats);
+        }
+        getWriter().println();
     }
 
     /**
@@ -91,15 +78,12 @@ public class ConsoleExporter extends AbstractDataExporter {
      *
      */
     private void exportClassDocStats(final ClassDocStats classStats) {
-        // getWriter().printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n",
-        // classStats.getType(), classStats.getName(), classStats.getPackageName(),
-        // classStats.isDocumented(), classStats.getDocumentedMembersPercent());
-        //
-        // exportMembersDocStats(getWriter(), classStats.getFieldsStats());
-        // exportMethodsDocStats(getWriter(), classStats.getConstructorsStats());
-        // exportMethodsDocStats(getWriter(), classStats.getMethodsStats());
-        // exportMembersDocStats(getWriter(), classStats.getEnumsStats());
-        // getWriter().flush();
+        exportMembersDocStats(getWriter(), classStats.getFieldsStats());
+        exportMembersDocStats(getWriter(), classStats.getEnumsStats());
+        exportMembersDocStats(getWriter(), classStats.getAnnotationsStats());
+        exportMethodsDocStats(getWriter(), classStats.getConstructorsStats());
+        exportMethodsDocStats(getWriter(), classStats.getMethodsStats());
+        getWriter().flush();
     }
 
     private void exportMethodsDocStats(final PrintWriter writer, final List<MethodDocStats> methodStatsList) {
