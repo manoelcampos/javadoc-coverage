@@ -15,12 +15,13 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.PackageDoc;
-
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
+import com.manoelcampos.javadoc.coverage.Utils;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.PackageDoc;
 
 /**
  * Computes JavaDoc statistics for a set of packages.
@@ -29,10 +30,13 @@ import java.util.Set;
  * @since 1.0.0
  */
 public class PackagesDocStats extends MembersDocStats {
-    private final Set<PackageDoc> packagesDoc;
+    private final PackageDoc packageDoc;
+    private final boolean computeOnlyForPublic;
+    private final List<ClassDocStats> classDocs = new ArrayList<>();
 
-    public PackagesDocStats(){
-        this.packagesDoc = new HashSet<>();
+    public PackagesDocStats(final PackageDoc doc, boolean computeOnlyForPublic) {
+        this.packageDoc = doc;
+        this.computeOnlyForPublic = computeOnlyForPublic;
     }
 
     /**
@@ -40,41 +44,40 @@ public class PackagesDocStats extends MembersDocStats {
      *
      * @param doc the package's JavaDoc element to add to the Set
      */
-    public void addPackageDoc(final PackageDoc doc){
-        packagesDoc.add(doc);
+    public void addClass(final ClassDoc doc) {
+        if (!packageDoc.equals(doc.containingPackage())) {
+            throw new IllegalArgumentException("Class is not in the correct package");
+        }
+        classDocs.add(new ClassDocStats(doc, computeOnlyForPublic));
+    }
+
+    public List<ClassDocStats> getClassDocs() {
+        return Collections.unmodifiableList(classDocs);
     }
 
     @Override
     public String getType() {
-        return "Packages";
+        return "Package";
+    }
+
+    public String getName() {
+        return packageDoc.name();
     }
 
     @Override
-    public long getMembersNumber() {
-        return packagesDoc.size();
+    public long getNumberOfDocumentedMembers() {
+        return classDocs.stream().mapToLong(DocStats::getNumberOfDocumentedMembers).sum() + Utils.boolToInt(isDocumented());
     }
 
     @Override
-    public long getDocumentedMembers() {
-        return packagesDoc.stream().map(PackageDoc::getRawCommentText).filter(Utils::isNotStringEmpty).count();
+    public long getNumberOfDocumentableMembers() {
+        // +1 for the package-info documentation
+        return classDocs.stream().mapToLong(DocStats::getNumberOfDocumentableMembers).sum() + 1;
     }
 
-    /**
-     * Gets a Set of elements containing packages' JavaDocs.
-     *
-     * @return the Set of packages' JavaDocs
-     */
-    public Set<PackageDoc> getPackagesDoc() {
-        return Collections.unmodifiableSet(packagesDoc);
-    }
-
-    /**
-     * A set of packages doesn't have documentation,
-     * only each individual package may have.
-     * @return
-     */
     @Override
     public boolean isDocumented() {
-        return false;
+        return Utils.isNotStringEmpty(packageDoc.getRawCommentText());
     }
+
 }

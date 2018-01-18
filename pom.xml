@@ -7,7 +7,7 @@
     <groupId>com.manoelcampos</groupId>
     <artifactId>javadoc-coverage</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.0</version>
+    <version>1.2.7-SNAPSHOT</version>
 
     <name>JavaDoc Coverage Doclet</name>
     <description>Doclet to generate coverage reports of JavaDoc documentation.</description>

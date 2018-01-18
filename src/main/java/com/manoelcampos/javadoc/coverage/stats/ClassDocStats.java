@@ -37,8 +37,6 @@ public class ClassDocStats extends MembersDocStats {
     /**
      * This value is added to the number of elements in order to count the class itself as an element
      * which can be documented.
-     *
-     * @see #getMembersNumber()
      */
     private static final int CLASS_DOC = 1;
 
@@ -82,54 +80,19 @@ public class ClassDocStats extends MembersDocStats {
         methodsStats = new ArrayList<>();
         for (final MethodDoc method : methods) {
             if (!computeOnlyForPublic || method.isPublic()) {
-                methodsStats.add(new MethodDocStats(method));
+                if (isNoPredefinedEnumMethod(doc, method)) {
+                    methodsStats.add(new MethodDocStats(method));
+                }
             }
         }
     }
 
-    @Override
-    public long getDocumentedMembers() {
-        return
-                Utils.boolToInt(isDocumented()) +
-                fieldsStats.getDocumentedMembers() +
-                enumsStats.getDocumentedMembers() +
-                getDocumentedMethodMembers(methodsStats) +
-                getDocumentedMethodMembers(constructorsStats) +
-                annotationsStats.getDocumentedMembers();
-    }
-
-    @Override
-    public long getMembersNumber() {
-        return CLASS_DOC +
-               fieldsStats.getMembersNumber() +
-               enumsStats.getMembersNumber() +
-                getMethodMembers(methodsStats) +
-                getMethodMembers(constructorsStats) +
-               annotationsStats.getMembersNumber();
-    }
-
-    private long getDocumentedMethodMembers(final List<MethodDocStats> methodOrConstructor) {
-        return methodOrConstructor.stream().filter(MethodDocStats::isDocumented).count() +
-               methodOrConstructor.stream().mapToLong(MethodDocStats::getDocumentedMembers).sum();
-    }
-
-    /**
-     * Gets the amount of documentable members from a given list of methods/constructors.
-     *
-     * @param methodOrConstructor a list containing the methods and constructors to get their number of members
-     * @return the total number of members for the given list of methods/constructors
-     * @see MethodDocStats#getMembersNumber()
-     */
-    private long getMethodMembers(final List<MethodDocStats> methodOrConstructor) {
-        return methodOrConstructor.stream().mapToLong(MethodDocStats::getMembersNumber).sum();
+    private boolean isNoPredefinedEnumMethod(ClassDoc doc, final MethodDoc method) {
+        return !(doc.isEnum() && (method.name().equals("values") || method.name().equals("valueOf")));
     }
 
     public String getName() {
         return doc.name();
-    }
-
-    public String getPackageName() {
-        return doc.containingPackage().name();
     }
 
     @Override
@@ -157,12 +120,32 @@ public class ClassDocStats extends MembersDocStats {
         return Collections.unmodifiableList(constructorsStats);
     }
 
-    public ClassDoc getDoc() {
-        return doc;
-    }
-
     @Override
     public boolean isDocumented() {
         return Utils.isElementDocumented(doc.getRawCommentText());
+    }
+
+    @Override
+    public long getNumberOfDocumentedMembers() {
+        // @formatter:off
+        return constructorsStats.stream().mapToLong(DocStats::getNumberOfDocumentedMembers).sum()
+                + methodsStats.stream().mapToLong(DocStats::getNumberOfDocumentedMembers).sum()
+                + fieldsStats.getNumberOfDocumentedMembers()
+                + enumsStats.getNumberOfDocumentedMembers()
+                + annotationsStats.getNumberOfDocumentedMembers()
+                + (isDocumented() ? CLASS_DOC : 0);
+        // @formatter:on
+    }
+
+    @Override
+    public long getNumberOfDocumentableMembers() {
+        // @formatter:off
+        return constructorsStats.stream().mapToLong(DocStats::getNumberOfDocumentableMembers).sum()
+                + methodsStats.stream().mapToLong(DocStats::getNumberOfDocumentableMembers).sum()
+                + fieldsStats.getNumberOfDocumentableMembers()
+                + enumsStats.getNumberOfDocumentableMembers()
+                + annotationsStats.getNumberOfDocumentableMembers()
+                + CLASS_DOC;
+        // @formatter:on
     }
 }

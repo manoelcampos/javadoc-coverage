@@ -121,7 +121,6 @@ public abstract class AbstractDataExporter implements DataExporter {
     public boolean build() {
         try {
             header();
-            exportClassesDocStats();
             exportPackagesDocStats();
             exportProjectDocumentationCoverageSummary();
             footer();
@@ -154,6 +153,4 @@ public abstract class AbstractDataExporter implements DataExporter {
     protected abstract void afterBuild();
 
     protected abstract void exportPackagesDocStats();
-
-    protected abstract void exportClassesDocStats();
 }

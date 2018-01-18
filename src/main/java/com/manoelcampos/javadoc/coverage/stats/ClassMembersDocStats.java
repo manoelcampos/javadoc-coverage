@@ -56,34 +56,46 @@ public class ClassMembersDocStats extends MembersDocStats {
         this.computeOnlyForPublic = computeOnlyForPublic;
     }
 
+    @Override
+    public String getType() {
+        return membersType;
+    }
+
     /**
-     * Gets the number of members which are explicitly declared into the source code,
-     * from a list of given members.
+     * A set of class members doesn't have documentation, only each individual member may have.
      *
-     * The length of the given array cannot be used to this purpose
-     * because some elements such as default no-args constructors are not directly declared
-     * into the source class but are counted as a member.
-     * This way, it may count as a non-documented element
-     * while it doesn't even exist into the source code.
+     * @return always false
      */
     @Override
-    public long getMembersNumber() {
+    public boolean isDocumented() {
+        return false;
+    }
+
+
+    @Override
+    public long getNumberOfDocumentedMembers() {
+        // @formatter:off
+        return Arrays.stream(membersDocs)
+                .filter(filterPublicIfNecessary())
+                .map(Doc::getRawCommentText)
+                .filter(Utils::isNotStringEmpty)
+                .count();
+        // @formatter:on
+    }
+
+    @Override
+    public long getNumberOfDocumentableMembers() {
         /*
-         * @todo the method is not working as expected. It always returns the length of the array.
-         * The side-effect is that default no-args constructors (which aren't directly declared into
-         * a class source code) will be computed as undocumented.
+         * default constructors are also counted here, this is correct, they will also appear in the generated javadoc, and have no
+         * dedicated information
          */
+        // @formatter:off
         return Arrays.stream(membersDocs)
                 .filter(filterPublicIfNecessary())
                 .map(Doc::position)
                 .filter(Objects::nonNull)
                 .count();
-    }
-
-    @Override
-    public long getDocumentedMembers() {
-        return Arrays.stream(membersDocs).filter(filterPublicIfNecessary()).map(Doc::getRawCommentText).filter(Utils::isNotStringEmpty)
-                .count();
+        // @formatter:on
     }
 
     private Predicate<? super Doc> filterPublicIfNecessary() {
@@ -99,20 +111,5 @@ public class ClassMembersDocStats extends MembersDocStats {
             }
             return true;
         };
-    }
-
-    @Override
-    public String getType() {
-        return membersType;
-    }
-
-    /**
-     * A set of class members doesn't have documentation,
-     * only each individual member may have.
-     * @return
-     */
-    @Override
-    public boolean isDocumented() {
-        return false;
     }
 }

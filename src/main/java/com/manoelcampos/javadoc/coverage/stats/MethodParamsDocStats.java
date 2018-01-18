@@ -36,11 +36,6 @@ public class MethodParamsDocStats extends MethodTagsDocStats {
     }
 
     @Override
-    public long getMembersNumber() {
-        return getDoc().parameters().length;
-    }
-
-    @Override
     public String getTagName() {
         return "@param";
     }
@@ -48,5 +43,10 @@ public class MethodParamsDocStats extends MethodTagsDocStats {
     @Override
     public String getType() {
         return "Params";
+    }
+
+    @Override
+    public long getNumberOfDocumentableMembers() {
+        return getDoc().parameters().length;
     }
 }
