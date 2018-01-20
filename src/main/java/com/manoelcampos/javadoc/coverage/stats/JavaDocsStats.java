@@ -37,7 +37,7 @@ import com.sun.javadoc.RootDoc;
  */
 public class JavaDocsStats implements DocStats {
 
-    private final List<PackagesDocStats> packagesDocStats;
+    private final List<PackageDocStats> packagesDocStats;
 
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for all Java files received by the JavaDoc tool.
@@ -50,11 +50,11 @@ public class JavaDocsStats implements DocStats {
     public JavaDocsStats(final RootDoc rootDoc, boolean computeOnlyForPublic) {
         this.packagesDocStats = new ArrayList<>();
 
-        Map<PackageDoc, PackagesDocStats> tmp = new HashMap<>();
+        Map<PackageDoc, PackageDocStats> tmp = new HashMap<>();
         for (final ClassDoc doc : rootDoc.classes()) {
             // add all packages regardless of public/whatever classes in it
             if (!tmp.containsKey(doc.containingPackage())) {
-                PackagesDocStats pkgDoc = new PackagesDocStats(doc.containingPackage(), computeOnlyForPublic);
+                PackageDocStats pkgDoc = new PackageDocStats(doc.containingPackage(), computeOnlyForPublic);
                 tmp.put(doc.containingPackage(), pkgDoc);
             }
 
@@ -71,7 +71,7 @@ public class JavaDocsStats implements DocStats {
      *
      * @return packages' JavaDoc coverage statistics
      */
-    public List<PackagesDocStats> getPackagesDocStats() {
+    public List<PackageDocStats> getPackagesDocStats() {
         return packagesDocStats;
     }
 

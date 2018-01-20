@@ -29,12 +29,12 @@ import com.sun.javadoc.PackageDoc;
  * @author Manoel Campos da Silva Filho
  * @since 1.0.0
  */
-public class PackagesDocStats extends MembersDocStats {
+public class PackageDocStats extends MembersDocStats {
     private final PackageDoc packageDoc;
     private final boolean computeOnlyForPublic;
     private final List<ClassDocStats> classDocs = new ArrayList<>();
 
-    public PackagesDocStats(final PackageDoc doc, boolean computeOnlyForPublic) {
+    public PackageDocStats(final PackageDoc doc, boolean computeOnlyForPublic) {
         this.packageDoc = doc;
         this.computeOnlyForPublic = computeOnlyForPublic;
     }

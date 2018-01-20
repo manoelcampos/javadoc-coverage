@@ -79,10 +79,8 @@ public class ClassDocStats extends MembersDocStats {
         final MethodDoc[] methods = doc.methods(false);
         methodsStats = new ArrayList<>();
         for (final MethodDoc method : methods) {
-            if (!computeOnlyForPublic || method.isPublic()) {
-                if (isNoPredefinedEnumMethod(doc, method)) {
-                    methodsStats.add(new MethodDocStats(method));
-                }
+            if ((!computeOnlyForPublic || method.isPublic()) && isNoPredefinedEnumMethod(doc, method)) {
+                methodsStats.add(new MethodDocStats(method));
             }
         }
     }

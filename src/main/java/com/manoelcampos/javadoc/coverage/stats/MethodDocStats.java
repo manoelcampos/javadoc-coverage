@@ -16,6 +16,8 @@
 package com.manoelcampos.javadoc.coverage.stats;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.ClassDoc;
@@ -87,23 +89,30 @@ public class MethodDocStats extends MembersDocStats {
         return Arrays.stream(doc.tags()).filter(t -> t.name().equals("@return")).map(Tag::text).anyMatch(Utils::isNotStringEmpty);
     }
 
-    private boolean isOverridden() {
+    private boolean isOverriddenDocumented() {
         if (doc.isMethod()) {
             MethodDoc curMethod = (MethodDoc) doc;
-            ClassDoc[] interfaces = curMethod.containingClass().interfaces();
-            ClassDoc superclass = curMethod.containingClass().superclass();
+            Set<ClassDoc> allClassesToCheck = new HashSet<>();
 
-            for (ClassDoc inter : interfaces) {
-                for (MethodDoc method : inter.methods()) {
-                    if (curMethod.overrides(method)) {
-                        return true;
-                    }
-                }
+            // really use all interfaces, there might be interfaces extending interfaces
+            // such that this is needed
+            for (ClassDoc ifc : curMethod.containingClass().interfaces()) {
+                allClassesToCheck.add(ifc);
+                allClassesToCheck.addAll(getAllInterfaces(ifc));
+            }
+            ClassDoc superclass = curMethod.containingClass().superclass();
+            while (superclass != null) {
+                allClassesToCheck.add(superclass);
+                superclass = superclass.superclass();
             }
 
-            if (superclass != null) {
-                for (MethodDoc method : superclass.methods()) {
-                    if (curMethod.overrides(method)) {
+            for (ClassDoc potOverridden : allClassesToCheck) {
+                for (MethodDoc method : potOverridden.methods()) {
+                    // only if overridden method is documented completely
+                    // we assume that the overriding method doesn't need to be documented
+                    MethodDocStats methodStats = new MethodDocStats(method);
+                    if (curMethod.overrides(method)
+                            && methodStats.getNumberOfDocumentedMembers() == methodStats.getNumberOfDocumentableMembers()) {
                         return true;
                     }
                 }
@@ -111,6 +120,15 @@ public class MethodDocStats extends MembersDocStats {
         }
 
         return false;
+    }
+
+    private Set<ClassDoc> getAllInterfaces(ClassDoc doc) {
+        Set<ClassDoc> ifcs = new HashSet<>();
+        for (ClassDoc ifc : doc.interfaces()) {
+            ifcs.add(ifc);
+            ifcs.addAll(getAllInterfaces(ifc));
+        }
+        return ifcs;
     }
 
     /**
@@ -147,7 +165,7 @@ public class MethodDocStats extends MembersDocStats {
          * If an overridden method isn't documented at all, it doesn't matter because its documentation is optional. The superclass is
          * accountable to document the method. This way, the method is counted as completely documented.
          */
-        if (isOverridden() && documentedMembers == 0) {
+        if (isOverriddenDocumented() && documentedMembers == 0) {
             return getNumberOfDocumentableMembers();
         }
 

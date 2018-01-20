@@ -23,7 +23,7 @@ import com.manoelcampos.javadoc.coverage.Utils;
 import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
-import com.manoelcampos.javadoc.coverage.stats.PackagesDocStats;
+import com.manoelcampos.javadoc.coverage.stats.PackageDocStats;
 
 /**
  * Prints the JavaDoc coverage report to the console (standard output).
@@ -53,7 +53,7 @@ public class ConsoleExporter extends AbstractDataExporter {
 
     @Override
     protected void exportPackagesDocStats() {
-        for (PackagesDocStats packageDoc : getStats().getPackagesDocStats()) {
+        for (PackageDocStats packageDoc : getStats().getPackagesDocStats()) {
             getWriter().printf("%-26s: \t%11d Undocumented: %6d Documented: %6d (%.2f%%)\n",
                     packageDoc.getType() + " " + packageDoc.getName(),
                     packageDoc.getNumberOfDocumentableMembers(), packageDoc.getUndocumentedMembersOfElement(),
@@ -63,7 +63,7 @@ public class ConsoleExporter extends AbstractDataExporter {
         getWriter().println();
     }
 
-    private void exportClassesDocStats(PackagesDocStats packageWithClasses) {
+    private void exportClassesDocStats(PackageDocStats packageWithClasses) {
         for (final ClassDocStats classStats : packageWithClasses.getClassDocs()) {
             getWriter().printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n", classStats.getType(), classStats.getName(),
                     packageWithClasses.getName(), classStats.isDocumented(), classStats.getDocumentedMembersPercent());

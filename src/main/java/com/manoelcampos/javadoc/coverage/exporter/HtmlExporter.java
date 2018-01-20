@@ -23,7 +23,7 @@ import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
 import com.manoelcampos.javadoc.coverage.stats.JavaDocsStats;
 import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
 import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
-import com.manoelcampos.javadoc.coverage.stats.PackagesDocStats;
+import com.manoelcampos.javadoc.coverage.stats.PackageDocStats;
 
 /**
  * Exports the JavaDoc coverage report to an HTML file.
@@ -85,7 +85,7 @@ public class HtmlExporter extends AbstractDataExporter {
 
     @Override
     protected void exportPackagesDocStats() {
-        for (final PackagesDocStats doc : getStats().getPackagesDocStats()) {
+        for (final PackageDocStats doc : getStats().getPackagesDocStats()) {
             getWriter().println("<tr>");
             exportLine(0, "Package", doc.getName(), "", doc.getNumberOfDocumentableMembers(), doc.getUndocumentedMembersOfElement(),
                     doc.getNumberOfDocumentedMembers(), doc.getDocumentedMembersPercent());
@@ -97,7 +97,7 @@ public class HtmlExporter extends AbstractDataExporter {
     }
 
 
-    private void exportClassesDocStats(PackagesDocStats pkg) {
+    private void exportClassesDocStats(PackageDocStats pkg) {
         for (final ClassDocStats classDocStats : pkg.getClassDocs()) {
             exportMembersDocStatsSummary(classDocStats, 2, classDocStats.getName(), pkg.getName());
             int isClassDocumented = Utils.boolToInt(classDocStats.isDocumented());
