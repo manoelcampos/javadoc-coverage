@@ -3,7 +3,7 @@
 
 ![](coverage-report-sample.png)
 
-A Doclet to generate JavaDoc coverage reports. It parses the java source files and checks the percentage of the Java code covered by JavaDoc documentation, including:
+The Doclet parses java source files and checks the percentage of the Java code covered by JavaDoc documentation, including:
 - packages (*Java 9 modules not supported yet*)
 - classes, inner classes, interfaces and enums
 - class attributes
@@ -158,11 +158,6 @@ task javadocJar(type: Jar, dependsOn: javadocCoverageReport) {
 }
 ```
 
-The example shows how to ignore the package `com.manoelcampos.sample2` from the coverage report. The `<excludePackageNames>` tag accepts a list of packages separated by `:` and also wildcards such as `*`.
-For more details, check this [link](https://maven.apache.org/plugins/maven-javadoc-plugin/examples/exclude-package-names.html).
-
-If you are generating the regular JavaDoc HTML files, you have to include this configuration only where the CoverageDoclet is being used into your pom.xml, unless you want these packages to be excluded from the regular JavaDocs too.
-
 # Additional Configuration (optional)
 
 You can define additional configurations for the plugin. 
@@ -189,6 +184,11 @@ You can exclude some packages from the coverage report by adding the code exampl
     <excludePackageNames>com.manoelcampos.sample2</excludePackageNames>
 </configuration>
 ```
+
+The example shows how to ignore the package `com.manoelcampos.sample2` from the coverage report. The `<excludePackageNames>` tag accepts a list of packages separated by `:` and also wildcards such as `*`.
+For more details, check this [link](https://maven.apache.org/plugins/maven-javadoc-plugin/examples/exclude-package-names.html).
+
+If you are generating the regular JavaDoc HTML files, you have to include this configuration only where the CoverageDoclet is being used into your pom.xml, unless you want these packages to be excluded from the regular JavaDocs too.
 
 # Building the Doclet from Sources
 

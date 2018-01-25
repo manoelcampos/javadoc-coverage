@@ -86,7 +86,7 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
      * A set of tags doesn't have documentation.
      * Only each individual tag may have.
      *
-     * @return
+     * @return always false
      */
     @Override
     public boolean isDocumented() {

@@ -60,6 +60,12 @@
                                 <version>1.2.0</version>
                             </docletArtifact>
                             <failOnError>false</failOnError>
+
+                            <!-- The following configuration is optional.
+                             If an output name isn't given, the report will be
+                             generated as index.html.
+                             -->
+                            <additionalOptions>-outputName "relatorio.html"</additionalOptions>
                         </configuration>
                     </execution>
                 </executions>

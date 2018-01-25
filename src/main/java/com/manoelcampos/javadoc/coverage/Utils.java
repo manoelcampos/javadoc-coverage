@@ -34,10 +34,13 @@ public final class Utils {
     private Utils() {}
 
     /**
-     * Checks if a element (class, interface, method, etc) is in fact documented or not.
+     * Checks if an element (package, class, interface, method or constructor) is in fact documented or not.
      * Sometimes, there is a javadoc, but the description of the member is empty.
      * The javadoc may just contain tags documenting the elements belonging to this member
-     * (such as method parameters).
+     * (such as method parameters), but the member itself is not documented.
+     *
+     * <p><b>WARNING</b>: This method is not useful to check if a {@code @param}, {@code @return} or {@code @throws} tag
+     * for a method is documented or not.</p>
      *
      * @param javadoc the complete JavaDoc for an element.
      * @return
