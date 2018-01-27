@@ -15,19 +15,10 @@
  */
 package com.manoelcampos.javadoc.coverage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 
-import com.manoelcampos.javadoc.coverage.exporter.ConsoleExporter;
-import com.manoelcampos.javadoc.coverage.exporter.DataExporter;
-import com.manoelcampos.javadoc.coverage.exporter.HtmlExporter;
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.Doclet;
-import com.sun.javadoc.LanguageVersion;
-import com.sun.javadoc.RootDoc;
+import com.manoelcampos.javadoc.coverage.exporter.*;
+import com.sun.javadoc.*;
 import com.sun.tools.doclets.standard.Standard;
 
 /**

@@ -15,9 +15,7 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.sun.javadoc.ClassDoc;
 
@@ -33,10 +31,8 @@ public class ClassesDocStats extends MembersDocStats {
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for a list of classes.
      *
-     * @param classDocs
-     *            an array of elements which enables reading the classes' JavaDoc documentation
-     * @param computeOnlyForPublic
-     *            indicates that coverage should only be compute for the public part of the javadoc
+     * @param classDocs an array of elements which enables reading the classes' JavaDoc documentation
+     * @param computeOnlyForPublic indicates that coverage should only be compute for the public part of the javadoc
      */
     public ClassesDocStats(final ClassDoc[] classDocs, boolean computeOnlyForPublic) {
         classesDocStats = new ArrayList<>();
@@ -59,7 +55,10 @@ public class ClassesDocStats extends MembersDocStats {
 
     @Override
     public long getDocumentedMembers() {
-        return classesDocStats.stream().filter(ClassDocStats::isDocumented).count();
+        return classesDocStats
+                .stream()
+                .filter(ClassDocStats::isDocumented)
+                .count();
     }
 
     /**
@@ -72,9 +71,9 @@ public class ClassesDocStats extends MembersDocStats {
     }
 
     /**
-     * A set of classes doesn't have documentation,
-     * only each individual class may have.
-     * @return
+     * A set of classes doesn't have documentation, only each individual class may have.
+     *
+     * @return always false
      */
     @Override
     public boolean isDocumented() {

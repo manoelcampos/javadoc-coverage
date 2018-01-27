@@ -42,10 +42,8 @@ public class JavaDocsStats implements DocStats {
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for all Java files received by the JavaDoc tool.
      *
-     * @param rootDoc
-     *            root element which enables reading JavaDoc documentation
-     * @param computeOnlyForPublic
-     *            indicates that coverage should only be compute for the public part of the javadoc
+     * @param rootDoc root element which enables reading JavaDoc documentation
+     * @param computeOnlyForPublic indicates that coverage should only be compute for the public part of the javadoc
      */
     public JavaDocsStats(final RootDoc rootDoc, boolean computeOnlyForPublic) {
         this.rootDoc = rootDoc;

@@ -15,9 +15,7 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 
 import com.manoelcampos.javadoc.coverage.CoverageDoclet;
 import com.manoelcampos.javadoc.coverage.Utils;

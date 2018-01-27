@@ -15,16 +15,10 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.AnnotationTypeDoc;
-import com.sun.javadoc.AnnotationTypeElementDoc;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ConstructorDoc;
-import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.*;
 
 /**
  * Computes statistics about the JavaDocs of a class, inner class, interface or enum
@@ -89,8 +83,7 @@ public class ClassDocStats extends MembersDocStats {
 
     @Override
     public long getDocumentedMembers() {
-        return
-                Utils.boolToInt(isDocumented()) +
+        return Utils.boolToInt(isDocumented()) +
                 fieldsStats.getDocumentedMembers() +
                 enumsStats.getDocumentedMembers() +
                 getDocumentedMethodMembers(methodsStats) +
@@ -101,16 +94,16 @@ public class ClassDocStats extends MembersDocStats {
     @Override
     public long getMembersNumber() {
         return CLASS_DOC +
-               fieldsStats.getMembersNumber() +
-               enumsStats.getMembersNumber() +
+                fieldsStats.getMembersNumber() +
+                enumsStats.getMembersNumber() +
                 getMethodMembers(methodsStats) +
                 getMethodMembers(constructorsStats) +
-               annotationsStats.getMembersNumber();
+                annotationsStats.getMembersNumber();
     }
 
     private long getDocumentedMethodMembers(final List<MethodDocStats> methodOrConstructor) {
         return methodOrConstructor.stream().filter(MethodDocStats::isDocumented).count() +
-               methodOrConstructor.stream().mapToLong(MethodDocStats::getDocumentedMembers).sum();
+                methodOrConstructor.stream().mapToLong(MethodDocStats::getDocumentedMembers).sum();
     }
 
     /**
@@ -121,7 +114,10 @@ public class ClassDocStats extends MembersDocStats {
      * @see MethodDocStats#getMembersNumber()
      */
     private long getMethodMembers(final List<MethodDocStats> methodOrConstructor) {
-        return methodOrConstructor.stream().mapToLong(MethodDocStats::getMembersNumber).sum();
+        return methodOrConstructor
+                .stream()
+                .mapToLong(MethodDocStats::getMembersNumber)
+                .sum();
     }
 
     public String getName() {

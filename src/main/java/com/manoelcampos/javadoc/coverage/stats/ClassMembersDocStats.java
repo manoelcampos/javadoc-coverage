@@ -20,9 +20,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.Doc;
-import com.sun.javadoc.ProgramElementDoc;
+import com.sun.javadoc.*;
 
 /**
  * Computes JavaDoc coverage statistics for specific type of members belonging to an owner.
@@ -43,12 +41,9 @@ public class ClassMembersDocStats extends MembersDocStats {
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for the members of a class, interface or enum.
      *
-     * @param membersDocs
-     *            the JavaDoc documentation for the members of the owner.
-     * @param membersType
-     *            the type of the members of the owner to compute JavaDoc coverage statistics.
-     * @param computeOnlyForPublic
-     *            indicates that coverage should only be compute for the public part of the javadoc
+     * @param membersDocs the JavaDoc documentation for the members of the owner.
+     * @param membersType the type of the members of the owner to compute JavaDoc coverage statistics.
+     * @param computeOnlyForPublic indicates that coverage should only be compute for the public part of the javadoc
      */
     ClassMembersDocStats(final Doc[] membersDocs, final String membersType, boolean computeOnlyForPublic) {
         this.membersDocs = membersDocs;
@@ -82,7 +77,10 @@ public class ClassMembersDocStats extends MembersDocStats {
 
     @Override
     public long getDocumentedMembers() {
-        return Arrays.stream(membersDocs).filter(filterPublicIfNecessary()).map(Doc::getRawCommentText).filter(Utils::isNotStringEmpty)
+        return Arrays.stream(membersDocs)
+                .filter(filterPublicIfNecessary())
+                .map(Doc::getRawCommentText)
+                .filter(Utils::isNotStringEmpty)
                 .count();
     }
 
@@ -107,9 +105,9 @@ public class ClassMembersDocStats extends MembersDocStats {
     }
 
     /**
-     * A set of class members doesn't have documentation,
-     * only each individual member may have.
-     * @return
+     * A set of class members doesn't have documentation, only each individual member may have.
+     *
+     * @return always false
      */
     @Override
     public boolean isDocumented() {

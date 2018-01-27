@@ -19,9 +19,7 @@ import java.util.List;
 
 import com.manoelcampos.javadoc.coverage.CoverageDoclet;
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
+import com.manoelcampos.javadoc.coverage.stats.*;
 import com.sun.javadoc.PackageDoc;
 
 /**
