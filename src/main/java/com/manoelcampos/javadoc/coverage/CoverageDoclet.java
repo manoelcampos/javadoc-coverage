@@ -42,7 +42,6 @@ public class CoverageDoclet {
      */
     private final DataExporter exporter;
     private final RootDoc rootDoc;
-    private final Configuration config;
 
     /**
      * Starts the actual parsing or JavaDoc documentation and generation of the coverage report. This is the entry point
@@ -63,7 +62,7 @@ public class CoverageDoclet {
      */
     public CoverageDoclet(final RootDoc rootDoc) {
         this.rootDoc = rootDoc;
-        this.config = new Configuration(rootDoc.options());
+        Configuration config = new Configuration(rootDoc.options());
 
         JavaDocsStats stats = new JavaDocsStats(rootDoc, config);
 
