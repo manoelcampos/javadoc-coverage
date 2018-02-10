@@ -18,12 +18,11 @@ package com.manoelcampos.javadoc.coverage.exporter;
 import java.io.PrintWriter;
 import java.util.List;
 
-import com.manoelcampos.javadoc.coverage.CoverageDoclet;
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
-import com.manoelcampos.javadoc.coverage.stats.PackageDocStats;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.manoelcampos.javadoc.coverage.stats.*;
+
+import lombok.NonNull;
 
 /**
  * Prints the JavaDoc coverage report to the console (standard output).
@@ -33,8 +32,8 @@ import com.manoelcampos.javadoc.coverage.stats.PackageDocStats;
  */
 public class ConsoleExporter extends AbstractDataExporter {
 
-    public ConsoleExporter(final CoverageDoclet doclet) {
-        super(doclet);
+    public ConsoleExporter(@NonNull Configuration config, @NonNull JavaDocsStats stats) {
+        super(config, stats);
     }
 
     @Override

@@ -15,16 +15,11 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.AnnotationTypeDoc;
-import com.sun.javadoc.AnnotationTypeElementDoc;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ConstructorDoc;
-import com.sun.javadoc.MethodDoc;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.sun.javadoc.*;
 
 /**
  * Computes statistics about the JavaDocs of a class, inner class, interface or enum
@@ -48,20 +43,20 @@ public class ClassDocStats extends MembersDocStats {
     private List<MethodDocStats> methodsStats;
     private List<MethodDocStats> constructorsStats;
 
-    public ClassDocStats(final ClassDoc doc, boolean computeOnlyForPublic) {
+    public ClassDocStats(final ClassDoc doc, Configuration config) {
         this.doc = doc;
-        fieldsStats = new ClassMembersDocStats(doc.fields(false), "Fields", computeOnlyForPublic);
-        enumsStats = new ClassMembersDocStats(doc.enumConstants(), "Enum Consts", computeOnlyForPublic);
-        processMethodsDocsStats(doc, computeOnlyForPublic);
-        processConstructorsDocsStats(doc, computeOnlyForPublic);
-        processAnnotationsDocsStats(doc, computeOnlyForPublic);
+        fieldsStats = new ClassMembersDocStats(doc.fields(false), "Fields", config);
+        enumsStats = new ClassMembersDocStats(doc.enumConstants(), "Enum Consts", config);
+        processMethodsDocsStats(doc, config.computePublicCoverageOnly());
+        processConstructorsDocsStats(doc, config.computePublicCoverageOnly());
+        processAnnotationsDocsStats(doc, config);
     }
 
-    private void processAnnotationsDocsStats(ClassDoc doc, boolean computeOnlyForPublic) {
+    private void processAnnotationsDocsStats(ClassDoc doc, Configuration config) {
         if (doc instanceof AnnotationTypeDoc) {
-            annotationsStats = new ClassMembersDocStats(((AnnotationTypeDoc) doc).elements(), "Annotations", computeOnlyForPublic);
+            annotationsStats = new ClassMembersDocStats(((AnnotationTypeDoc) doc).elements(), "Annotations", config);
         } else {
-            annotationsStats = new ClassMembersDocStats(new AnnotationTypeElementDoc[0], "Annotations", computeOnlyForPublic);
+            annotationsStats = new ClassMembersDocStats(new AnnotationTypeElementDoc[0], "Annotations", config);
         }
     }
 

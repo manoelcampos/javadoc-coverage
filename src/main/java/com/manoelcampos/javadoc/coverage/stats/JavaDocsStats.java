@@ -15,14 +15,10 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.PackageDoc;
-import com.sun.javadoc.RootDoc;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.sun.javadoc.*;
 
 /**
  * Computes JavaDoc coverage statistics for Java files received by the JavaDoc tool.
@@ -42,24 +38,22 @@ public class JavaDocsStats implements DocStats {
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for all Java files received by the JavaDoc tool.
      *
-     * @param rootDoc
-     *            root element which enables reading JavaDoc documentation
-     * @param computeOnlyForPublic
-     *            indicates that coverage should only be compute for the public part of the javadoc
+     * @param rootDoc root element which enables reading JavaDoc documentation
+     * @param config the coverage configuration
      */
-    public JavaDocsStats(final RootDoc rootDoc, boolean computeOnlyForPublic) {
+    public JavaDocsStats(final RootDoc rootDoc, Configuration config) {
         this.packagesDocStats = new ArrayList<>();
 
         Map<PackageDoc, PackageDocStats> tmp = new HashMap<>();
         for (final ClassDoc doc : rootDoc.classes()) {
             // add all packages regardless of public/whatever classes in it
             if (!tmp.containsKey(doc.containingPackage())) {
-                PackageDocStats pkgDoc = new PackageDocStats(doc.containingPackage(), computeOnlyForPublic);
+                PackageDocStats pkgDoc = new PackageDocStats(doc.containingPackage(), config);
                 tmp.put(doc.containingPackage(), pkgDoc);
             }
 
             // only add necessary classes depending on options
-            if (!computeOnlyForPublic || doc.isPublic()) {
+            if (!config.computePublicCoverageOnly() || doc.isPublic()) {
                 tmp.get(doc.containingPackage()).addClass(doc);
             }
         }

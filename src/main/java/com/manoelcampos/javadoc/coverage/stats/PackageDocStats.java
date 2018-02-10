@@ -15,11 +15,10 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.PackageDoc;
 
@@ -31,12 +30,12 @@ import com.sun.javadoc.PackageDoc;
  */
 public class PackageDocStats extends MembersDocStats {
     private final PackageDoc packageDoc;
-    private final boolean computeOnlyForPublic;
+    private final Configuration config;
     private final List<ClassDocStats> classDocs = new ArrayList<>();
 
-    public PackageDocStats(final PackageDoc doc, boolean computeOnlyForPublic) {
+    public PackageDocStats(final PackageDoc doc, Configuration config) {
         this.packageDoc = doc;
-        this.computeOnlyForPublic = computeOnlyForPublic;
+        this.config = config;
     }
 
     /**
@@ -48,7 +47,7 @@ public class PackageDocStats extends MembersDocStats {
         if (!packageDoc.equals(doc.containingPackage())) {
             throw new IllegalArgumentException("Class is not in the correct package");
         }
-        classDocs.add(new ClassDocStats(doc, computeOnlyForPublic));
+        classDocs.add(new ClassDocStats(doc, config));
     }
 
     public List<ClassDocStats> getClassDocs() {
