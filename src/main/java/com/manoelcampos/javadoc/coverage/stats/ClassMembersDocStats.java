@@ -17,9 +17,9 @@ package com.manoelcampos.javadoc.coverage.stats;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
 import com.sun.javadoc.*;
 
 /**
@@ -36,19 +36,19 @@ public class ClassMembersDocStats extends MembersDocStats {
      */
     private final Doc[] membersDocs;
     private final String membersType;
-    private final boolean computeOnlyForPublic;
+    private final Configuration config;
 
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for the members of a class, interface or enum.
      *
      * @param membersDocs the JavaDoc documentation for the members of the owner.
      * @param membersType the type of the members of the owner to compute JavaDoc coverage statistics.
-     * @param computeOnlyForPublic indicates that coverage should only be compute for the public part of the javadoc
+     * @param config the configuration of the coverage doclet
      */
-    ClassMembersDocStats(final Doc[] membersDocs, final String membersType, boolean computeOnlyForPublic) {
+    ClassMembersDocStats(final Doc[] membersDocs, final String membersType, Configuration config) {
         this.membersDocs = membersDocs;
         this.membersType = membersType;
-        this.computeOnlyForPublic = computeOnlyForPublic;
+        this.config = config;
     }
 
     /**
@@ -69,7 +69,7 @@ public class ClassMembersDocStats extends MembersDocStats {
          * a class source code) will be computed as undocumented.
          */
         return Arrays.stream(membersDocs)
-                .filter(filterPublicIfNecessary())
+                .filter(this::filterPublicIfNecessary)
                 .map(Doc::position)
                 .filter(Objects::nonNull)
                 .count();
@@ -78,25 +78,25 @@ public class ClassMembersDocStats extends MembersDocStats {
     @Override
     public long getDocumentedMembers() {
         return Arrays.stream(membersDocs)
-                .filter(filterPublicIfNecessary())
+                .filter(this::filterPublicIfNecessary)
                 .map(Doc::getRawCommentText)
                 .filter(Utils::isNotStringEmpty)
                 .count();
     }
 
-    private Predicate<? super Doc> filterPublicIfNecessary() {
-        return m -> {
-            if (computeOnlyForPublic) {
-                if (m instanceof ClassDoc) {
-                    return !computeOnlyForPublic || ((ClassDoc) m).isPublic();
-                } else if (m instanceof ProgramElementDoc) {
-                    return !computeOnlyForPublic || ((ProgramElementDoc) m).isPublic();
-                } else {
-                    throw new UnsupportedOperationException("unimplemented for type " + m.getClass());
-                }
+    private boolean filterPublicIfNecessary(Doc m) {
+        boolean computeOnlyForPublic = config.computePublicCoverageOnly();
+
+        if (computeOnlyForPublic) {
+            if (m instanceof ClassDoc) {
+                return !computeOnlyForPublic || ((ClassDoc) m).isPublic();
+            } else if (m instanceof ProgramElementDoc) {
+                return !computeOnlyForPublic || ((ProgramElementDoc) m).isPublic();
+            } else {
+                throw new UnsupportedOperationException("unimplemented for type " + m.getClass());
             }
-            return true;
-        };
+        }
+        return true;
     }
 
     @Override

@@ -16,6 +16,7 @@
 package com.manoelcampos.javadoc.coverage.stats;
 
 import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.RootDoc;
 
@@ -45,9 +46,9 @@ public class JavaDocsStats implements DocStats {
      * @param rootDoc root element which enables reading JavaDoc documentation
      * @param computeOnlyForPublic indicates that coverage should only be compute for the public part of the javadoc
      */
-    public JavaDocsStats(final RootDoc rootDoc, boolean computeOnlyForPublic) {
+    public JavaDocsStats(final RootDoc rootDoc, Configuration config) {
         this.rootDoc = rootDoc;
-        this.classesDocStats = new ClassesDocStats(rootDoc.classes(), computeOnlyForPublic);
+        this.classesDocStats = new ClassesDocStats(rootDoc.classes(), config);
         this.packagesDocStats = computePackagesDocsStats();
     }
 

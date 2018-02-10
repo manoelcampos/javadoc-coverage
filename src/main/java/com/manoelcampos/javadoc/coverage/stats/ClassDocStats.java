@@ -18,6 +18,7 @@ package com.manoelcampos.javadoc.coverage.stats;
 import java.util.*;
 
 import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
 import com.sun.javadoc.*;
 
 /**
@@ -44,20 +45,20 @@ public class ClassDocStats extends MembersDocStats {
     private List<MethodDocStats> methodsStats;
     private List<MethodDocStats> constructorsStats;
 
-    public ClassDocStats(final ClassDoc doc, boolean computeOnlyForPublic) {
+    public ClassDocStats(final ClassDoc doc, Configuration config) {
         this.doc = doc;
-        fieldsStats = new ClassMembersDocStats(doc.fields(false), "Fields", computeOnlyForPublic);
-        enumsStats = new ClassMembersDocStats(doc.enumConstants(), "Enum Consts", computeOnlyForPublic);
-        processMethodsDocsStats(doc, computeOnlyForPublic);
-        processConstructorsDocsStats(doc, computeOnlyForPublic);
-        processAnnotationsDocsStats(doc, computeOnlyForPublic);
+        fieldsStats = new ClassMembersDocStats(doc.fields(false), "Fields", config);
+        enumsStats = new ClassMembersDocStats(doc.enumConstants(), "Enum Consts", config);
+        processMethodsDocsStats(doc, config.computePublicCoverageOnly());
+        processConstructorsDocsStats(doc, config.computePublicCoverageOnly());
+        processAnnotationsDocsStats(doc, config);
     }
 
-    private void processAnnotationsDocsStats(ClassDoc doc, boolean computeOnlyForPublic) {
+    private void processAnnotationsDocsStats(ClassDoc doc, Configuration config) {
         if (doc instanceof AnnotationTypeDoc) {
-            annotationsStats = new ClassMembersDocStats(((AnnotationTypeDoc) doc).elements(), "Annotations", computeOnlyForPublic);
+            annotationsStats = new ClassMembersDocStats(((AnnotationTypeDoc) doc).elements(), "Annotations", config);
         } else {
-            annotationsStats = new ClassMembersDocStats(new AnnotationTypeElementDoc[0], "Annotations", computeOnlyForPublic);
+            annotationsStats = new ClassMembersDocStats(new AnnotationTypeElementDoc[0], "Annotations", config);
         }
     }
 

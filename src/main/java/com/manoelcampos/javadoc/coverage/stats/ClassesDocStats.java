@@ -17,6 +17,7 @@ package com.manoelcampos.javadoc.coverage.stats;
 
 import java.util.*;
 
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
 import com.sun.javadoc.ClassDoc;
 
 /**
@@ -32,13 +33,13 @@ public class ClassesDocStats extends MembersDocStats {
      * Instantiates an object to compute JavaDoc coverage statistics for a list of classes.
      *
      * @param classDocs an array of elements which enables reading the classes' JavaDoc documentation
-     * @param computeOnlyForPublic indicates that coverage should only be compute for the public part of the javadoc
+     * @param config indicates that coverage should only be compute for the public part of the javadoc
      */
-    public ClassesDocStats(final ClassDoc[] classDocs, boolean computeOnlyForPublic) {
+    public ClassesDocStats(final ClassDoc[] classDocs, Configuration config) {
         classesDocStats = new ArrayList<>();
         for (final ClassDoc doc : classDocs) {
-            if (!computeOnlyForPublic || doc.isPublic()) {
-                classesDocStats.add(new ClassDocStats(doc, computeOnlyForPublic));
+            if (!config.computePublicCoverageOnly() || doc.isPublic()) {
+                classesDocStats.add(new ClassDocStats(doc, config));
             }
         }
     }
