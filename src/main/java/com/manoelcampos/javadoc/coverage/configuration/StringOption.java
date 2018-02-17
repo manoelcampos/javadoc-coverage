@@ -17,7 +17,7 @@ class StringOption extends Option<String> {
     @Override
     public String parseValue(String[] value) {
         if (value.length != 2) {
-            throw new IllegalStateException("Wrong option line passed, string options do only have 2 values");
+            throw new IllegalArgumentException("Wrong option line passed, string options do only have 2 values");
         }
         return value[1];
     }
