@@ -162,12 +162,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.sun.tools</groupId>
             <artifactId>tools</artifactId>
             <version>${java.version}</version>
