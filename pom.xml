@@ -7,7 +7,7 @@
     <groupId>com.manoelcampos</groupId>
     <artifactId>javadoc-coverage</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 
     <name>JavaDoc Coverage Doclet</name>
     <description>Doclet to generate coverage reports of JavaDoc documentation.</description>
@@ -62,13 +62,13 @@
             <!--
              A profile used to execute all goals required to deploy
              the project to the Maven Central.
-             To execute use: mvn clean deploy -P all
+             To execute use: mvn clean deploy -P sonatype
 
              To check the deployed artifact and probably release it to maven central
              you should visit https://oss.sonatype.org.
              MAKE SURE YOU ARE LOGGED IN TO SEE YOUR DEPLOYMENTS.
              -->
-            <id>all</id>
+            <id>sonatype</id>
             <build>
                 <plugins>
                     <plugin>
@@ -118,6 +118,14 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <!-- Prevent `gpg` from using pinentry programs
+                                    and avoid "gpg: signing failed: Inappropriate ioctl for device" error. -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -147,7 +155,7 @@
     <!--
      URLs to deploy the project at the Maven Central (http://mvnrepository.com)
      using a Sonatype account (http://central.sonatype.org)
-     See the "all" profile in this pom for deployment information.
+     See the "sonatype" profile in this pom for deployment information.
     -->
     <distributionManagement>
         <snapshotRepository>
