@@ -15,14 +15,13 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
-import com.manoelcampos.javadoc.coverage.CoverageDoclet;
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
-import com.sun.javadoc.PackageDoc;
-
 import java.util.List;
+
+import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.manoelcampos.javadoc.coverage.stats.*;
+
+import lombok.NonNull;
 
 /**
  * Exports the JavaDoc coverage report to an HTML file.
@@ -33,13 +32,16 @@ import java.util.List;
 public class HtmlExporter extends AbstractDataExporter {
     public static final String COLUMNS = "<td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%.2f%%</td>\n";
 
-    public HtmlExporter(final CoverageDoclet doclet) {
-        super(doclet, ".html");
+    public HtmlExporter(@NonNull final Configuration config, @NonNull JavaDocsStats stats) {
+        super(config, stats, ".html");
     }
 
     @Override
     protected void exportProjectDocumentationCoverageSummary() {
-        getWriter().printf("<tr>" + COLUMNS + "</tr>", "<strong>Project Documentation Coverage</strong>", "", "", "", "", "", getStats().getDocumentedMembersPercent());
+        JavaDocsStats stats = getStats();
+        getWriter().printf("<tr>" + COLUMNS + "</tr>", "<strong>Project Documentation Coverage</strong>", "", "",
+                stats.getNumberOfDocumentableMembers(), stats.getUndocumentedMembersOfElement(),
+                stats.getNumberOfDocumentedMembers(), stats.getDocumentedMembersPercent());
     }
 
     @Override
@@ -81,21 +83,27 @@ public class HtmlExporter extends AbstractDataExporter {
 
     @Override
     protected void exportPackagesDocStats() {
-        exportMembersDocStatsSummary(getStats().getPackagesDocStats());
-        for (final PackageDoc doc : getStats().getPackagesDocStats().getPackagesDoc()) {
+        for (final PackageDocStats doc : getStats().getPackagesDocStats()) {
             getWriter().println("<tr>");
-            final Boolean documented = Utils.isNotStringEmpty(doc.getRawCommentText());
-            final double coverage = Utils.boolToInt(documented)*100;
-            exportLine(2, "Package", doc.name(), "", "", "", documented.toString(), coverage);
+            exportLine(0, "Package", doc.getName(), "", doc.getNumberOfDocumentableMembers(), doc.getUndocumentedMembersOfElement(),
+                    doc.getNumberOfDocumentedMembers(), doc.getDocumentedMembersPercent());
+            int isPackageDocumented = Utils.boolToInt(doc.isDocumented());
+            exportLine(2, "package-info.java", "", "", 1L, 1L - isPackageDocumented, (long) isPackageDocumented,
+                    isPackageDocumented * 100.0);
+            exportClassesDocStats(doc);
         }
     }
 
-    @Override
-    protected void exportClassesDocStats() {
-        exportMembersDocStatsSummary(getStats().getClassesDocStats());
-        for (final ClassDocStats classDocStats : getStats().getClassesDocStats().getClassesList()) {
-            exportMembersDocStatsSummary(classDocStats, 2, classDocStats.getName(), classDocStats.getPackageName());
+
+    private void exportClassesDocStats(PackageDocStats pkg) {
+        for (final ClassDocStats classDocStats : pkg.getClassDocs()) {
+            exportMembersDocStatsSummary(classDocStats, 2, classDocStats.getName(), pkg.getName());
+            int isClassDocumented = Utils.boolToInt(classDocStats.isDocumented());
+            exportLine(3, classDocStats.getType() + " Doc", "", "", 1L, 1L - isClassDocumented, (long) isClassDocumented,
+                    isClassDocumented * 100.0);
+            exportMembersDocStatsSummary(classDocStats.getEnumsStats(), 3);
             exportMembersDocStatsSummary(classDocStats.getFieldsStats(), 3);
+            exportMembersDocStatsSummary(classDocStats.getAnnotationsStats(), 3);
             exportMethodsDocStats(classDocStats.getConstructorsStats());
             exportMethodsDocStats(classDocStats.getMethodsStats());
         }
@@ -104,6 +112,13 @@ public class HtmlExporter extends AbstractDataExporter {
     private void exportMethodsDocStats(final List<MethodDocStats> methods) {
         for (MethodDocStats m : methods) {
             exportMembersDocStatsSummary(m, 4, m.getMethodName(), "");
+            int isMethodDocumented = Utils.boolToInt(m.isDocumented());
+            exportLine(5, m.getType() + " Doc", "", "", 1L, 1L - isMethodDocumented, (long) isMethodDocumented,
+                    isMethodDocumented * 100.0);
+            if (!m.isVoidMethodOrConstructor()) {
+                int isReturnDocumented = Utils.boolToInt(m.isReturnDocumented());
+                exportLine(5, "Return Value", "", "", 1L, 1L - isReturnDocumented, (long) isReturnDocumented, isReturnDocumented * 100.0);
+            }
             exportMembersDocStatsSummary(m.getParamsStats(), 5);
             exportMembersDocStatsSummary(m.getThrownExceptionsStats(), 5);
         }
@@ -113,20 +128,16 @@ public class HtmlExporter extends AbstractDataExporter {
         exportMembersDocStatsSummary(membersDocStats, indentLevel, "","");
     }
 
-    private void exportMembersDocStatsSummary(final MembersDocStats membersDocStats) {
-        exportMembersDocStatsSummary(membersDocStats, 1, "","");
-    }
-
     private void exportMembersDocStatsSummary(final MembersDocStats membersDocStats, final int indentLevel, final String name, final String pkg) {
-        if(!membersDocStats.isPrintIfNoMembers() && membersDocStats.getMembersNumber() == 0){
+        if (!membersDocStats.isPrintIfNoMembers() && membersDocStats.getNumberOfDocumentableMembers() == 0) {
             return;
         }
 
         exportLine(
                 indentLevel, membersDocStats.getType(), name, pkg,
-                membersDocStats.getMembersNumber(),
-                membersDocStats.getUndocumentedMembers(),
-                membersDocStats.getDocumentedMembers(),
+                membersDocStats.getNumberOfDocumentableMembers(),
+                membersDocStats.getUndocumentedMembersOfElement(),
+                membersDocStats.getNumberOfDocumentedMembers(),
                 membersDocStats.getDocumentedMembersPercent());
     }
 

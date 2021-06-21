@@ -15,9 +15,10 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.RootDoc;
+import java.util.*;
+
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.sun.javadoc.*;
 
 /**
  * Computes JavaDoc coverage statistics for Java files received by the JavaDoc tool.
@@ -31,56 +32,42 @@ import com.sun.javadoc.RootDoc;
  * @since 1.0.0
  */
 public class JavaDocsStats implements DocStats {
-    /**
-     * Stores the root of the program structure information.
-     */
-    private final RootDoc rootDoc;
 
-    private final PackagesDocStats packagesDocStats;
-    private final ClassesDocStats classesDocStats;
+    private final List<PackageDocStats> packagesDocStats;
 
     /**
-     * Instantiates an object to compute JavaDoc coverage statistics for all Java files
-     * received by the JavaDoc tool.
+     * Instantiates an object to compute JavaDoc coverage statistics for all Java files received by the JavaDoc tool.
      *
      * @param rootDoc root element which enables reading JavaDoc documentation
+     * @param config the coverage configuration
      */
-    public JavaDocsStats(final RootDoc rootDoc) {
-        this.rootDoc = rootDoc;
-        this.classesDocStats = new ClassesDocStats(rootDoc.classes());
-        this.packagesDocStats = computePackagesDocsStats();
-    }
+    public JavaDocsStats(final RootDoc rootDoc, Configuration config) {
+        this.packagesDocStats = new ArrayList<>();
 
-    /**
-     * Computes JavaDoc coverage statistics for detected packages.
-     *
-     * @return packages' JavaDoc coverage statistics
-     */
-    private PackagesDocStats computePackagesDocsStats() {
-        final PackagesDocStats stats = new PackagesDocStats();
+        Map<PackageDoc, PackageDocStats> tmp = new HashMap<>();
         for (final ClassDoc doc : rootDoc.classes()) {
-            stats.addPackageDoc(doc.containingPackage());
-        }
+            // add all packages regardless of public/whatever classes in it
+            if (!tmp.containsKey(doc.containingPackage())) {
+                PackageDocStats pkgDoc = new PackageDocStats(doc.containingPackage(), config);
+                tmp.put(doc.containingPackage(), pkgDoc);
+            }
 
-        return stats;
+            // only add necessary classes depending on options
+            if (!config.computePublicCoverageOnly() || doc.isPublic()) {
+                tmp.get(doc.containingPackage()).addClass(doc);
+            }
+        }
+        packagesDocStats.addAll(tmp.values());
     }
 
     /**
      * Gets the object containing JavaDoc coverage statistics for detected packages.
      *
      * @return packages' JavaDoc coverage statistics
-     * @see #computePackagesDocsStats()
      */
-    public PackagesDocStats getPackagesDocStats() {
+    public List<PackageDocStats> getPackagesDocStats() {
         return packagesDocStats;
     }
-
-    /**
-     * Gets the object containing JavaDoc coverage statistics for detected classes.
-     *
-     * @return classes' JavaDoc coverage statistics
-     */
-    public ClassesDocStats getClassesDocStats() { return classesDocStats; }
 
     @Override
     public String getType() {
@@ -88,17 +75,12 @@ public class JavaDocsStats implements DocStats {
     }
 
     @Override
-    public long getDocumentedMembers() {
-        return packagesDocStats.getDocumentedMembers() + classesDocStats.getDocumentedMembers();
+    public long getNumberOfDocumentedMembers() {
+        return packagesDocStats.stream().mapToLong(DocStats::getNumberOfDocumentedMembers).sum();
     }
 
     @Override
-    public double getDocumentedMembersPercent() {
-        return Utils.mean(packagesDocStats.getDocumentedMembersPercent(), classesDocStats.getDocumentedMembersPercent());
-    }
-
-    @Override
-    public long getMembersNumber() {
-        return classesDocStats.getMembersNumber() + packagesDocStats.getMembersNumber();
+    public long getNumberOfDocumentableMembers() {
+        return packagesDocStats.stream().mapToLong(DocStats::getNumberOfDocumentableMembers).sum();
     }
 }

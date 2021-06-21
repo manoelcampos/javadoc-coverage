@@ -15,13 +15,13 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
-import com.manoelcampos.javadoc.coverage.CoverageDoclet;
+import java.io.*;
+
 import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
 import com.manoelcampos.javadoc.coverage.stats.JavaDocsStats;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import lombok.NonNull;
 
 /**
  * Abstract class to implement JavaDoc Coverage reports in different formats.
@@ -34,17 +34,21 @@ public abstract class AbstractDataExporter implements DataExporter {
     private final JavaDocsStats stats;
     private final PrintWriter writer;
     private File file;
-    private final CoverageDoclet doclet;
+    private final Configuration config;
     private final String reportFileName;
 
     /**
      * Instantiates a DataExporter object to generate JavaDoc coverage report.
      *
-     * @param doclet        the {@link CoverageDoclet} which computes teh JavaDoc coverage statistics.
-     * @param fileExtension the extension to the report file. If empty, the report will be printed to the standard output.
+     * @param config the configuration of the doclet
+     * @param stats the javadoc statistics
+     * @param fileExtension the extension to the report file. If empty, the report will be printed to the standard
+     *            output.
      */
-    protected AbstractDataExporter(final CoverageDoclet doclet, final String fileExtension) {
-        this.doclet = doclet;
+    protected AbstractDataExporter(@NonNull final Configuration config, @NonNull final JavaDocsStats stats,
+            final String fileExtension) {
+        this.stats = stats;
+        this.config = config;
 
         if (Utils.isStringEmpty(fileExtension)) {
             writer = new PrintWriter(System.out);
@@ -52,54 +56,54 @@ public abstract class AbstractDataExporter implements DataExporter {
         } else {
             this.reportFileName = generateReportFileName(fileExtension);
             try {
-                this.writer = doclet.getWriter(file);
+                this.writer = getWriter(file);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        this.stats = new JavaDocsStats(doclet.getRootDoc());
     }
 
     /**
      * Instantiates a DataExporter object that generates JavaDoc coverage report to the standard output.
      *
-     * @param doclet the {@link CoverageDoclet} which computes teh JavaDoc coverage statistics.
+     * @param config the configuration of the doclet
+     * @param stats the javadoc statistics
      */
-    protected AbstractDataExporter(final CoverageDoclet doclet) {
-        this(doclet, "");
+    protected AbstractDataExporter(@NonNull final Configuration config, @NonNull final JavaDocsStats stats) {
+        this(config, stats, "");
+    }
+
+    /**
+     * Gets a {@link PrintWriter} used by the {@link #exporter} to write the coverage report to.
+     *
+     * @param file the file to which the coverage report will be saved to
+     */
+    private PrintWriter getWriter(final File file) throws FileNotFoundException {
+        return new PrintWriter(new OutputStreamWriter(new FileOutputStream(file)));
     }
 
     private String generateReportFileName(final String fileExtension) {
-        String fileName = getFileNameFromCommandLine();
-        fileName = fileName + fileExtensionToAdd(fileName, fileExtension);
-        this.file = doclet.getOutputFile(fileName);
+        String fileName = config.getCoverageFileName();
+        if (Utils.getFileExtension(fileName).isEmpty()) {
+            fileName += getFileExtensionStartingWithDot(fileExtension);
+        }
+        this.file = getOutputFile(fileName);
         return fileName;
     }
 
     /**
-     * Gets the JavaDoc Coverage Report file name from command line options
-     * or the default name if no option is given.
+     * Gets a {@link File} object for the output file
      *
-     * @return
-     * @see CoverageDoclet#OUTPUT_NAME_OPTION
+     * @return the {@link File} object
      */
-    private String getFileNameFromCommandLine() {
-        final String[] outputNameOption = doclet.getOptionValues(CoverageDoclet.OUTPUT_NAME_OPTION);
-        return outputNameOption.length > 1 ? outputNameOption[1] : DEFAULT_OUTPUT_NAME;
-    }
+    private File getOutputFile(String fileName) {
+        String outputDirectory = config.getOutputDirectory();
+        final File dir = new File(outputDirectory);
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new RuntimeException("The directory '" + outputDirectory + "' was not created due to unknown reason.");
+        }
 
-    /**
-     * Gets the extension to add to a given file if it doesn't have one.
-     *
-     * @param fileName             the file name to try getting and extension to add
-     * @param defaultFileExtension the default file extension to return if the file doesn't have one
-     * @return the file extension to add to the file it it doesn't have one or an empty string
-     * if it already has.
-     */
-    private String fileExtensionToAdd(final String fileName, final String defaultFileExtension) {
-        return Utils.getFileExtension(fileName).isEmpty() ?
-                getFileExtensionStartingWithDot(defaultFileExtension) : "";
+        return new File(dir, fileName);
     }
 
     /**
@@ -121,7 +125,6 @@ public abstract class AbstractDataExporter implements DataExporter {
     public boolean build() {
         try {
             header();
-            exportClassesDocStats();
             exportPackagesDocStats();
             exportProjectDocumentationCoverageSummary();
             footer();
@@ -154,6 +157,4 @@ public abstract class AbstractDataExporter implements DataExporter {
     protected abstract void afterBuild();
 
     protected abstract void exportPackagesDocStats();
-
-    protected abstract void exportClassesDocStats();
 }

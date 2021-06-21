@@ -15,13 +15,14 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
-import com.manoelcampos.javadoc.coverage.CoverageDoclet;
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.stats.*;
-import com.sun.javadoc.PackageDoc;
-
 import java.io.PrintWriter;
 import java.util.List;
+
+import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.manoelcampos.javadoc.coverage.stats.*;
+
+import lombok.NonNull;
 
 /**
  * Prints the JavaDoc coverage report to the console (standard output).
@@ -31,8 +32,8 @@ import java.util.List;
  */
 public class ConsoleExporter extends AbstractDataExporter {
 
-    public ConsoleExporter(final CoverageDoclet doclet) {
-        super(doclet);
+    public ConsoleExporter(@NonNull Configuration config, @NonNull JavaDocsStats stats) {
+        super(config, stats);
     }
 
     @Override
@@ -51,33 +52,20 @@ public class ConsoleExporter extends AbstractDataExporter {
 
     @Override
     protected void exportPackagesDocStats() {
-        final PackagesDocStats packagesDocStats = getStats().getPackagesDocStats();
-        exportPkgsOrClassesDocStats(packagesDocStats);
-        packagesDocStats.getPackagesDoc().forEach(this::exportPackageDocStats);
+        for (PackageDocStats packageDoc : getStats().getPackagesDocStats()) {
+            getWriter().printf("%-26s: \t%11d Undocumented: %6d Documented: %6d (%.2f%%)\n",
+                    packageDoc.getType() + " " + packageDoc.getName(),
+                    packageDoc.getNumberOfDocumentableMembers(), packageDoc.getUndocumentedMembersOfElement(),
+                    packageDoc.getNumberOfDocumentedMembers(), packageDoc.getDocumentedMembersPercent());
+            exportClassesDocStats(packageDoc);
+        }
         getWriter().println();
     }
 
-    private void exportPkgsOrClassesDocStats(MembersDocStats packagesDocStats) {
-        getWriter().printf("%-26s: \t%11d Undocumented: %6d Documented: %6d (%.2f%%)\n",
-                packagesDocStats.getType(), packagesDocStats.getMembersNumber(), packagesDocStats.getUndocumentedMembers(),
-                packagesDocStats.getDocumentedMembers(), packagesDocStats.getDocumentedMembersPercent());
-    }
-
-    /**
-     * Exports the statistics about JavaDoc coverage of a given package.
-     *  @param doc the object containing the JavaDoc coverage data
-     *
-     */
-    private void exportPackageDocStats(final PackageDoc doc) {
-        getWriter().printf("\tPackage %s. Documented: %s\n", doc.name(), Utils.isNotStringEmpty(doc.commentText()));
-    }
-
-    @Override
-    protected void exportClassesDocStats() {
-        final ClassesDocStats classesDocStats = getStats().getClassesDocStats();
-        exportPkgsOrClassesDocStats(classesDocStats);
-
-        for (final ClassDocStats classStats : getStats().getClassesDocStats().getClassesList()) {
+    private void exportClassesDocStats(PackageDocStats packageWithClasses) {
+        for (final ClassDocStats classStats : packageWithClasses.getClassDocs()) {
+            getWriter().printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n", classStats.getType(), classStats.getName(),
+                    packageWithClasses.getName(), classStats.isDocumented(), classStats.getDocumentedMembersPercent());
             exportClassDocStats(classStats);
         }
         getWriter().println();
@@ -89,14 +77,11 @@ public class ConsoleExporter extends AbstractDataExporter {
      *
      */
     private void exportClassDocStats(final ClassDocStats classStats) {
-        getWriter().printf("\t%s: %s Package: %s Documented: %s (%.2f%%)\n",
-                classStats.getType(), classStats.getName(), classStats.getPackageName(),
-                classStats.isDocumented(), classStats.getDocumentedMembersPercent());
-
         exportMembersDocStats(getWriter(), classStats.getFieldsStats());
+        exportMembersDocStats(getWriter(), classStats.getEnumsStats());
+        exportMembersDocStats(getWriter(), classStats.getAnnotationsStats());
         exportMethodsDocStats(getWriter(), classStats.getConstructorsStats());
         exportMethodsDocStats(getWriter(), classStats.getMethodsStats());
-        exportMembersDocStats(getWriter(), classStats.getEnumsStats());
         getWriter().flush();
     }
 
@@ -108,7 +93,7 @@ public class ConsoleExporter extends AbstractDataExporter {
                     methodStats.isDocumented(), methodStats.getDocumentedMembersPercent());
             exportMembersDocStats(writer, methodStats.getParamsStats(), memberTypeFormat);
 
-            if (methodStats.getThrownExceptionsStats().getMembersNumber() > 0) {
+            if (methodStats.getThrownExceptionsStats().getNumberOfDocumentableMembers() > 0) {
                 exportMembersDocStats(writer, methodStats.getThrownExceptionsStats(), memberTypeFormat);
             }
         }
@@ -119,16 +104,16 @@ public class ConsoleExporter extends AbstractDataExporter {
     }
 
     private void exportMembersDocStats(final PrintWriter writer, final MembersDocStats membersDocStats, final String memberTypeFormat) {
-        if (membersDocStats.getMembersNumber() == 0 && !membersDocStats.isPrintIfNoMembers()) {
+        if (membersDocStats.getNumberOfDocumentableMembers() == 0 && !membersDocStats.isPrintIfNoMembers()) {
             return;
         }
 
         final String format = (Utils.isStringEmpty(memberTypeFormat) ? "\t\t%-20s" : memberTypeFormat) +
-                              " %6d Undocumented: %6d Documented: %6d (%.2f%%) \n";
+                " %6d Undocumented: %6d Documented: %6d (%.2f%%) \n";
         writer.printf(format,
-                membersDocStats.getType()+":", membersDocStats.getMembersNumber(),
-                membersDocStats.getUndocumentedMembers(),
-                membersDocStats.getDocumentedMembers(),  membersDocStats.getDocumentedMembersPercent());
+                membersDocStats.getType() + ":", membersDocStats.getNumberOfDocumentableMembers(),
+                membersDocStats.getUndocumentedMembersOfElement(),
+                membersDocStats.getNumberOfDocumentedMembers(), membersDocStats.getDocumentedMembersPercent());
     }
 
 }

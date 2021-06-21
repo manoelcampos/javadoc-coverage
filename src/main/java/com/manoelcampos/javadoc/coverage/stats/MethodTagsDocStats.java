@@ -15,12 +15,12 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import com.manoelcampos.javadoc.coverage.Utils;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Tag;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 /**
  * An abstract class to compute JavaDoc statistics for a set of tags
@@ -50,16 +50,15 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
     }
 
     /**
-     * Gets the name of the tag associated to this object for which
-     * JavaDoc coverage statistics will be computed, for instance,
-     * "param" or "throws" tags.
+     * Gets the name of the tag associated to this object for which JavaDoc coverage statistics will be computed, for instance, "param" or
+     * "throws" tags.
      *
-     * @return
+     * @return the tag name
      */
     public abstract String getTagName();
 
     @Override
-    public long getDocumentedMembers() {
+    public long getNumberOfDocumentedMembers() {
         return getDocumentedTagStream().count();
     }
 
@@ -68,9 +67,11 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
      * @return the documented Tag Stream
      */
     protected Stream<Tag> getDocumentedTagStream() {
+        // @formatter:off
         return Arrays.stream(getDoc().tags())
                 .filter(tag -> getTagName().equals(tag.name()))
                 .filter(tag -> Utils.isNotStringEmpty(tag.text()));
+        // @formatter:on
     }
 
     /**
@@ -83,8 +84,7 @@ public abstract class MethodTagsDocStats extends MembersDocStats {
     }
 
     /**
-     * A set of tags doesn't have documentation.
-     * Only each individual tag may have.
+     * A set of tags doesn't have documentation. Only each individual tag may have.
      *
      * @return always false
      */

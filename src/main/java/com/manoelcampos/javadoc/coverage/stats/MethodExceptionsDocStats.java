@@ -15,14 +15,14 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ExecutableMemberDoc;
-import com.sun.javadoc.Tag;
-
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ExecutableMemberDoc;
+import com.sun.javadoc.Tag;
 
 /**
  * Computes JavaDoc coverage statistics for the exceptions thrown by a specific method.
@@ -61,10 +61,10 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
      * @return the total number of exceptions
      */
     @Override
-    public long getMembersNumber() {
+    public long getNumberOfDocumentableMembers() {
         return getDeclaredButNotDocumentedExceptionsNumber() +
-               getDocumentedButNotDeclaredExceptionsNumber() +
-               getDeclaredAndDocumentedExceptionsNumber();
+                getDocumentedButNotDeclaredExceptionsNumber() +
+                getDeclaredAndDocumentedExceptionsNumber();
     }
 
     /**
@@ -80,7 +80,7 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
      */
     private long getDocumentedButNotDeclaredExceptionsNumber() {
         return
-            getDocumentedTagStream()
+                getDocumentedTagStream()
                 .filter(tag -> getDeclaredExceptionsStream().noneMatch(ex -> isExceptionEqualsToJavaDocTag(ex, tag)))
                 .count();
     }
@@ -128,7 +128,7 @@ public class MethodExceptionsDocStats extends MethodTagsDocStats {
         even if the package is not included in the throws clause.
         On the other hand, the JavaDoc tag used by a developer to document the
         exception usually isn't prefixed with its package.
-        */
+         */
         return exception.toString().endsWith(getExceptionClassFromTag(tag));
     }
 

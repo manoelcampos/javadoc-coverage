@@ -38,7 +38,15 @@ public interface DocStats {
      *
      * @return the number of members having JavaDoc documentation
      */
-    long getDocumentedMembers();
+    long getNumberOfDocumentedMembers();
+
+    /**
+     * Gets the total number of members contained into the object for which the JavaDoc coverage statistics is being computed.
+     *
+     * @return the total number of members
+     */
+    long getNumberOfDocumentableMembers();
+
 
     /**
      * Gets the number of undocumented members contained into
@@ -46,8 +54,8 @@ public interface DocStats {
      *
      * @return the number of members <b>not</b> having JavaDoc documentation
      */
-    default long getUndocumentedMembers() {
-        return getMembersNumber() - getDocumentedMembers();
+    default long getUndocumentedMembersOfElement() {
+        return getNumberOfDocumentableMembers() - getNumberOfDocumentedMembers();
     }
 
     /**
@@ -57,14 +65,7 @@ public interface DocStats {
      * @return the percentage of documented members, in scale from 0 to 100.
      */
     default double getDocumentedMembersPercent(){
-        return Utils.computePercentage(getDocumentedMembers(), getMembersNumber());
+        return Utils.computePercentage(getNumberOfDocumentedMembers(), getNumberOfDocumentableMembers());
     }
 
-    /**
-     * Gets the total number of members contained into
-     * the object for which the JavaDoc coverage statistics is being computed.
-     *
-     * @return the total number of members
-     */
-    long getMembersNumber();
 }
