@@ -15,14 +15,14 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
-import com.manoelcampos.javadoc.coverage.CoverageDoclet;
+import java.util.List;
+
 import com.manoelcampos.javadoc.coverage.Utils;
-import com.manoelcampos.javadoc.coverage.stats.ClassDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MembersDocStats;
-import com.manoelcampos.javadoc.coverage.stats.MethodDocStats;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.manoelcampos.javadoc.coverage.stats.*;
 import com.sun.javadoc.PackageDoc;
 
-import java.util.List;
+import lombok.NonNull;
 
 /**
  * Exports the JavaDoc coverage report to an HTML file.
@@ -33,8 +33,8 @@ import java.util.List;
 public class HtmlExporter extends AbstractDataExporter {
     public static final String COLUMNS = "<td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%.2f%%</td>\n";
 
-    public HtmlExporter(final CoverageDoclet doclet) {
-        super(doclet, ".html");
+    public HtmlExporter(@NonNull final Configuration config, @NonNull JavaDocsStats stats) {
+        super(config, stats, ".html");
     }
 
     @Override

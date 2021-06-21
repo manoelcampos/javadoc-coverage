@@ -15,13 +15,15 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
-import com.manoelcampos.javadoc.coverage.CoverageDoclet;
+import java.io.PrintWriter;
+import java.util.List;
+
 import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
 import com.manoelcampos.javadoc.coverage.stats.*;
 import com.sun.javadoc.PackageDoc;
 
-import java.io.PrintWriter;
-import java.util.List;
+import lombok.NonNull;
 
 /**
  * Prints the JavaDoc coverage report to the console (standard output).
@@ -31,8 +33,8 @@ import java.util.List;
  */
 public class ConsoleExporter extends AbstractDataExporter {
 
-    public ConsoleExporter(final CoverageDoclet doclet) {
-        super(doclet);
+    public ConsoleExporter(@NonNull Configuration config, @NonNull JavaDocsStats stats) {
+        super(config, stats);
     }
 
     @Override
@@ -124,7 +126,7 @@ public class ConsoleExporter extends AbstractDataExporter {
         }
 
         final String format = (Utils.isStringEmpty(memberTypeFormat) ? "\t\t%-20s" : memberTypeFormat) +
-                              " %6d Undocumented: %6d Documented: %6d (%.2f%%) \n";
+                " %6d Undocumented: %6d Documented: %6d (%.2f%%) \n";
         writer.printf(format,
                 membersDocStats.getType()+":", membersDocStats.getMembersNumber(),
                 membersDocStats.getUndocumentedMembers(),

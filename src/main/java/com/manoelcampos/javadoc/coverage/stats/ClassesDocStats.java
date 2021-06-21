@@ -15,13 +15,10 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.Doc;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.sun.javadoc.ClassDoc;
 
 /**
  * Computes JavaDoc coverage statistics for a list of classes.
@@ -35,12 +32,15 @@ public class ClassesDocStats extends MembersDocStats {
     /**
      * Instantiates an object to compute JavaDoc coverage statistics for a list of classes.
      *
-     * @param docs an array of elements which enables reading the classes' JavaDoc documentation
+     * @param classDocs an array of elements which enables reading the classes' JavaDoc documentation
+     * @param config indicates that coverage should only be compute for the public part of the javadoc
      */
-    public ClassesDocStats(final ClassDoc[] docs){
-        classesDocStats = new ArrayList<>(docs.length);
-        for (final ClassDoc doc : docs) {
-            classesDocStats.add(new ClassDocStats(doc));
+    public ClassesDocStats(final ClassDoc[] classDocs, Configuration config) {
+        classesDocStats = new ArrayList<>();
+        for (final ClassDoc doc : classDocs) {
+            if (!config.computePublicCoverageOnly() || doc.isPublic()) {
+                classesDocStats.add(new ClassDocStats(doc, config));
+            }
         }
     }
 
@@ -56,7 +56,10 @@ public class ClassesDocStats extends MembersDocStats {
 
     @Override
     public long getDocumentedMembers() {
-        return classesDocStats.stream().map(ClassDocStats::getDoc).map(Doc::getRawCommentText).filter(Utils::isNotStringEmpty).count();
+        return classesDocStats
+                .stream()
+                .filter(ClassDocStats::isDocumented)
+                .count();
     }
 
     /**
@@ -69,9 +72,9 @@ public class ClassesDocStats extends MembersDocStats {
     }
 
     /**
-     * A set of classes doesn't have documentation,
-     * only each individual class may have.
-     * @return
+     * A set of classes doesn't have documentation, only each individual class may have.
+     *
+     * @return always false
      */
     @Override
     public boolean isDocumented() {

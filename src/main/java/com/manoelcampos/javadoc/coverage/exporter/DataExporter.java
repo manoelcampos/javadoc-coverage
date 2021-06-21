@@ -15,8 +15,6 @@
  */
 package com.manoelcampos.javadoc.coverage.exporter;
 
-import com.manoelcampos.javadoc.coverage.CoverageDoclet;
-
 /**
  * An interface to implement JavaDoc Coverage reports in different formats such as HTML, CSV, JSON, etc.
  *
@@ -24,14 +22,6 @@ import com.manoelcampos.javadoc.coverage.CoverageDoclet;
  * @since 1.0.0
  */
 public interface DataExporter {
-    /**
-     * The name to be used as default for the JavaDoc Coverage report if
-     * a specific name is not given.
-     *
-     * @see CoverageDoclet#OUTPUT_NAME_OPTION
-     */
-    String DEFAULT_OUTPUT_NAME = "javadoc-coverage";
-
     /**
      * Gets the actual name to be used for the JavaDoc Coverage Report,
      * whether the default or given one.

@@ -15,12 +15,11 @@
  */
 package com.manoelcampos.javadoc.coverage.stats;
 
-import com.manoelcampos.javadoc.coverage.Utils;
-import com.sun.javadoc.*;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.manoelcampos.javadoc.coverage.Utils;
+import com.manoelcampos.javadoc.coverage.configuration.Configuration;
+import com.sun.javadoc.*;
 
 /**
  * Computes statistics about the JavaDocs of a class, inner class, interface or enum
@@ -46,41 +45,46 @@ public class ClassDocStats extends MembersDocStats {
     private List<MethodDocStats> methodsStats;
     private List<MethodDocStats> constructorsStats;
 
-    public ClassDocStats(final ClassDoc doc) {
+    public ClassDocStats(final ClassDoc doc, Configuration config) {
         this.doc = doc;
-        fieldsStats = new ClassMembersDocStats(doc.fields(false), "Fields");
-        enumsStats = new ClassMembersDocStats(doc.enumConstants(), "Enum Consts");
-        processMethodsDocsStats(doc);
-        processConstructorsDocsStats(doc);
-        processAnnotationsDocsStats(doc);
+        fieldsStats = new ClassMembersDocStats(doc.fields(false), "Fields", config);
+        enumsStats = new ClassMembersDocStats(doc.enumConstants(), "Enum Consts", config);
+        processMethodsDocsStats(doc, config.computePublicCoverageOnly());
+        processConstructorsDocsStats(doc, config.computePublicCoverageOnly());
+        processAnnotationsDocsStats(doc, config);
     }
 
-    private void processAnnotationsDocsStats(ClassDoc doc) {
+    private void processAnnotationsDocsStats(ClassDoc doc, Configuration config) {
         if (doc instanceof AnnotationTypeDoc) {
-            annotationsStats = new ClassMembersDocStats(((AnnotationTypeDoc) doc).elements(), "Annotations");
-        } else annotationsStats = new ClassMembersDocStats(new AnnotationTypeElementDoc[0], "Annotations");
-    }
-
-    private void processConstructorsDocsStats(ClassDoc doc) {
-        final ConstructorDoc[] constructors = doc.constructors(false);
-        constructorsStats = new ArrayList<>(constructors.length);
-        for (final ConstructorDoc constructor : constructors) {
-            constructorsStats.add(new MethodDocStats(constructor));
+            annotationsStats = new ClassMembersDocStats(((AnnotationTypeDoc) doc).elements(), "Annotations", config);
+        } else {
+            annotationsStats = new ClassMembersDocStats(new AnnotationTypeElementDoc[0], "Annotations", config);
         }
     }
 
-    private void processMethodsDocsStats(ClassDoc doc) {
+    private void processConstructorsDocsStats(ClassDoc doc, boolean computeOnlyForPublic) {
+        final ConstructorDoc[] constructors = doc.constructors(false);
+        constructorsStats = new ArrayList<>();
+        for (final ConstructorDoc constructor : constructors) {
+            if (!computeOnlyForPublic || constructor.isPublic()) {
+                constructorsStats.add(new MethodDocStats(constructor));
+            }
+        }
+    }
+
+    private void processMethodsDocsStats(ClassDoc doc, boolean computeOnlyForPublic) {
         final MethodDoc[] methods = doc.methods(false);
-        methodsStats = new ArrayList<>(methods.length);
+        methodsStats = new ArrayList<>();
         for (final MethodDoc method : methods) {
-            methodsStats.add(new MethodDocStats(method));
+            if (!computeOnlyForPublic || method.isPublic()) {
+                methodsStats.add(new MethodDocStats(method));
+            }
         }
     }
 
     @Override
     public long getDocumentedMembers() {
-        return
-                Utils.boolToInt(isDocumented()) +
+        return Utils.boolToInt(isDocumented()) +
                 fieldsStats.getDocumentedMembers() +
                 enumsStats.getDocumentedMembers() +
                 getDocumentedMethodMembers(methodsStats) +
@@ -91,16 +95,16 @@ public class ClassDocStats extends MembersDocStats {
     @Override
     public long getMembersNumber() {
         return CLASS_DOC +
-               fieldsStats.getMembersNumber() +
-               enumsStats.getMembersNumber() +
+                fieldsStats.getMembersNumber() +
+                enumsStats.getMembersNumber() +
                 getMethodMembers(methodsStats) +
                 getMethodMembers(constructorsStats) +
-               annotationsStats.getMembersNumber();
+                annotationsStats.getMembersNumber();
     }
 
     private long getDocumentedMethodMembers(final List<MethodDocStats> methodOrConstructor) {
         return methodOrConstructor.stream().filter(MethodDocStats::isDocumented).count() +
-               methodOrConstructor.stream().mapToLong(MethodDocStats::getDocumentedMembers).sum();
+                methodOrConstructor.stream().mapToLong(MethodDocStats::getDocumentedMembers).sum();
     }
 
     /**
@@ -111,7 +115,10 @@ public class ClassDocStats extends MembersDocStats {
      * @see MethodDocStats#getMembersNumber()
      */
     private long getMethodMembers(final List<MethodDocStats> methodOrConstructor) {
-        return methodOrConstructor.stream().mapToLong(MethodDocStats::getMembersNumber).sum();
+        return methodOrConstructor
+                .stream()
+                .mapToLong(MethodDocStats::getMembersNumber)
+                .sum();
     }
 
     public String getName() {
